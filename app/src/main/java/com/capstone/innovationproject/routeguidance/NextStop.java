@@ -12,7 +12,6 @@ import android.location.LocationManager;
 import android.content.Context;
 
 public class NextStop extends AppCompatActivity implements LocationListener {
-
     private TextView latituteField;
     private TextView longitudeField;
     private LocationManager locationManager;
@@ -22,41 +21,44 @@ public class NextStop extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
-
         latituteField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
 
+        // Get the location manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+        // Define the criteria how to select the locatioin provider -> use
+        // default
         Criteria criteria = new Criteria();
+        provider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(provider);
-
+        
+        // Initialize the location fields
         if (location != null) {
-            //System.out.println("Provider " + provider + " has been selected.");
+            System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         } else {
-            latituteField.setText("-");
-            longitudeField.setText("-");
+            latituteField.setText("Location not available");
+            longitudeField.setText("Location not available");
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-            locationManager.requestLocationUpdates(provider, 400, 1, this);
+        locationManager.requestLocationUpdates(provider, 400, 1, this);
     }
 
     /* Remove the locationlistener updates when Activity is paused */
     @Override
     protected void onPause() {
         super.onPause();
-            locationManager.removeUpdates(this);
+        locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        float lat = (float) (location.getLatitude());
-        float lng = (float) (location.getLongitude());
+        int lat = (int) (location.getLatitude());
+        int lng = (int) (location.getLongitude());
         latituteField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));
     }
@@ -79,5 +81,7 @@ public class NextStop extends AppCompatActivity implements LocationListener {
         Toast.makeText(this, "Disabled provider " + provider,
                 Toast.LENGTH_SHORT).show();
     }
+
+
 }
 
