@@ -29,9 +29,14 @@ public class NextStop extends AppCompatActivity implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
+        Location location;
 
+        try {
+             location = locationManager.getLastKnownLocation(provider);
+        }
+            catch (SecurityException se) {
+                location = null;
+        }
         if (location != null) {
             //System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
@@ -44,20 +49,28 @@ public class NextStop extends AppCompatActivity implements LocationListener {
     @Override
     protected void onResume() {
         super.onResume();
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
+        try{
+            locationManager.requestLocationUpdates(provider, 400, 1, this);
+        }
+            catch(SecurityException SE) {
+        }
     }
 
     /* Remove the locationlistener updates when Activity is paused */
     @Override
     protected void onPause() {
         super.onPause();
-        locationManager.removeUpdates(this);
+        try{
+            locationManager.removeUpdates(this);
+        }
+            catch (SecurityException se) {
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        int lat = (int) (location.getLatitude());
-        int lng = (int) (location.getLongitude());
+        float lat = (float) (location.getLatitude());
+        float lng = (float) (location.getLongitude());
         latituteField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));
     }
@@ -81,5 +94,4 @@ public class NextStop extends AppCompatActivity implements LocationListener {
                 Toast.LENGTH_SHORT).show();
     }
 }
-
 
