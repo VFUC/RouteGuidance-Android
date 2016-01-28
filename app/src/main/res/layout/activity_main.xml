@@ -9,8 +9,53 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.capstone.innovationproject.routeguidance.MainActivity">
     //testing123
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Hello World!"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:textSize="60dp"
+        android:id="@+id/textView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button 1"
+        android:id="@+id/buttonMain1"
+        android:layout_below="@+id/textView"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_marginTop="37dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button 2"
+        android:id="@+id/buttonMain2"
+        android:layout_alignTop="@+id/buttonMain1"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button 3"
+        android:id="@+id/buttonMain3"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/buttonMain1"
+        android:layout_alignStart="@+id/buttonMain1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="button4"
+        android:id="@+id/buttonMain4"
+        android:layout_alignTop="@+id/buttonMain3"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
+
 </RelativeLayout>
