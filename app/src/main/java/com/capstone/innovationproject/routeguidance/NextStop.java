@@ -31,12 +31,11 @@ public class NextStop extends AppCompatActivity implements LocationListener {
         Criteria criteria = new Criteria();
         Location location;
 
-        try {
+        //try {
              location = locationManager.getLastKnownLocation(provider);
-        }
-            catch (SecurityException se) {
-                location = null;
-        }
+        //}
+        //    catch (SecurityException se) {
+        //}
         if (location != null) {
             //System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
@@ -49,22 +48,18 @@ public class NextStop extends AppCompatActivity implements LocationListener {
     @Override
     protected void onResume() {
         super.onResume();
-        try{
             locationManager.requestLocationUpdates(provider, 400, 1, this);
-        }
-            catch(SecurityException SE) {
-        }
     }
 
     /* Remove the locationlistener updates when Activity is paused */
     @Override
     protected void onPause() {
         super.onPause();
-        try{
+       // try{
             locationManager.removeUpdates(this);
-        }
-            catch (SecurityException se) {
-        }
+        //}
+        //    catch (SecurityException se) {
+        //}
     }
 
     @Override
