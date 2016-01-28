@@ -83,4 +83,3 @@ public class NextStop extends AppCompatActivity implements LocationListener {
 }
 
 
-}

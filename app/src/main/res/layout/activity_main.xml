@@ -38,7 +38,8 @@
         android:id="@+id/buttonMain2"
         android:layout_alignTop="@+id/buttonMain1"
         android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignEnd="@+id/textView"
+        android:onClick="sendMessage" />
 
     <Button
         android:layout_width="wrap_content"
@@ -47,7 +48,8 @@
         android:id="@+id/buttonMain3"
         android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/buttonMain1"
-        android:layout_alignStart="@+id/buttonMain1" />
+        android:layout_alignStart="@+id/buttonMain1"
+        android:onClick="sendMessage" />
 
     <Button
         android:layout_width="wrap_content"
@@ -56,6 +58,7 @@
         android:id="@+id/buttonMain4"
         android:layout_alignTop="@+id/buttonMain3"
         android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignEnd="@+id/textView"
+        android:onClick="sendMessage" />
 
 </RelativeLayout>
