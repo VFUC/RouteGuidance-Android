@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.capstone.innovationproject.routeguidance.MainActivity">
+    tools:context="com.capstone.innovationproject.routeguidance.MainActivity"
+    android:onClick="onClick">
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,41 +25,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button 1"
-        android:id="@+id/buttonMain1"
+        android:id="@+id/button1Main"
         android:layout_below="@+id/textView"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
         android:layout_marginTop="37dp"
-        android:onClick="sendMessage" />
+        android:onClick="onClick" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button 2"
-        android:id="@+id/buttonMain2"
-        android:layout_alignTop="@+id/buttonMain1"
+        android:id="@+id/button2Main"
+        android:layout_alignTop="@+id/button1Main"
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView"
-        android:onClick="sendMessage" />
+        android:onClick="onClick" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button 3"
-        android:id="@+id/buttonMain3"
+        android:id="@+id/button3Main"
         android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/buttonMain1"
-        android:layout_alignStart="@+id/buttonMain1"
-        android:onClick="sendMessage" />
+        android:layout_alignLeft="@+id/button1Main"
+        android:layout_alignStart="@+id/button1Main"
+        android:onClick="onClick" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="button4"
-        android:id="@+id/buttonMain4"
-        android:layout_alignTop="@+id/buttonMain3"
+        android:id="@+id/button4Main"
+        android:layout_alignTop="@+id/button3Main"
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView"
-        android:onClick="sendMessage" />
+        android:onClick="onClick" />
 
 </RelativeLayout>
