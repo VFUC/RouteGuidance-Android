@@ -21,15 +21,6 @@ public class MainActivity extends AppCompatActivity {
                 i = new Intent(MainActivity.this, NextStop.class);
                 startActivity(i);
                 break;
-            case  R.id.button2Main:
-                //button2Main action here
-                break;
-            case  R.id.button3Main:
-                //button3Main action here
-                break;
-            case  R.id.button4Main:
-                //button4Main action here
-                break;
             default:
                 return;
         }
