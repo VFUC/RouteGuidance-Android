@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //getActionBar().hide();
     }
 
     public void onClick(View v){
@@ -27,7 +28,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-// testing
-// testing 2
-// testing 3

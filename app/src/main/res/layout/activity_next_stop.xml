@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.capstone.innovationproject.routeguidance.NextStop">
+    tools:context="com.capstone.innovationproject.routeguidance.NextStop"
+    android:background="#eaab00">
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
@@ -37,7 +38,7 @@
             android:id="@+id/TextView03"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Longitute: "
+            android:text="Longitude: "
             android:textSize="20dip" >
         </TextView>
 
@@ -50,4 +51,11 @@
         </TextView>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Testi"
+        android:id="@+id/TextView05" />
 </LinearLayout>

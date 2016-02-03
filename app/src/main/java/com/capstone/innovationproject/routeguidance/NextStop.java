@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Criteria;
@@ -14,22 +15,39 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.content.Context;
 
-public class NextStop extends AppCompatActivity implements LocationListener {
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class NextStop extends AppCompatActivity implements LocationListener, AsyncResponse {
     private TextView latituteField;
     private TextView longitudeField;
+    private TextView testiTeksti;
     private LocationManager locationManager;
     private String provider;
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
+    private EditText urlText; //Network-testi
+    private TextView textView;
+
+    //GetData getdata = new GetData();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
+
         latituteField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
-
+        testiTeksti = (TextView) findViewById(R.id.TextView05);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        //getdata.delegate = this;
+        //getdata.execute();
+        updateData();
 
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
@@ -62,7 +80,7 @@ public class NextStop extends AppCompatActivity implements LocationListener {
                     MY_PERMISSION_ACCESS_FINE_LOCATION);
         }
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
         }
 
@@ -77,8 +95,8 @@ public class NextStop extends AppCompatActivity implements LocationListener {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                     MY_PERMISSION_ACCESS_FINE_LOCATION);
         }
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
         }
 
@@ -111,6 +129,29 @@ public class NextStop extends AppCompatActivity implements LocationListener {
                 Toast.LENGTH_SHORT).show();
     }
 
+    public void processFinish(String output){
+        //Here you will receive the result fired from async class
+        //of onPostExecute(result) method
+        //
+        //testiTeksti = (TextView) findViewById(R.id.TextView05);
+        testiTeksti.setText(output);
+    }
+
+    public void updateData() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                try {
+                    GetData data = new GetData();
+                    data.delegate = NextStop.this;
+                    data.execute();
+                } catch (Exception e) {
+                    //testiTeksti.setText("Error. ");
+                    // TODO: handle exception
+                }
+
+            }
+        }, 0, 5000);
+    }
 
 }
-
