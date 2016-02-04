@@ -153,5 +153,4 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             }
         }, 0, 5000);
     }
-
 }
