@@ -35,12 +35,14 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
     private Location sijainti;
+    private String busNumberText = "";
+    private String stopNameText = "";
     private String distanceText = "";
     private float Longitude = 0;
     private float Latitude = 0;
     private String stopName = "";
     private String key = "";
-    private String BusNumber;
+    private String busNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +157,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                 JSONObject jsonNode = jsonVehicles.getJSONObject(key);
 
                 //Get bus data
-                BusNumber = jsonNode.optString("publishedlinename");
+                busNumber = jsonNode.optString("publishedlinename");
                 stopName = jsonNode.optString("next_stoppointname");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
@@ -166,12 +168,13 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                 distancetemp = sijainti.distanceTo(temp);
                 if(distancetemp < distance && distancetemp > 0) {
                     distance = distancetemp;
+                    busNumberText = busNumber;
+                    stopNameText = stopName;
                     distanceText = String.format("%.0f", distance) ;
-                    //distanceText = Double.toString(distance);
                 }
             }
-            stopnameField.setText(stopName);
-            busnumberField.setText(BusNumber);
+            stopnameField.setText(stopNameText);
+            busnumberField.setText(busNumberText);
             distanceField.setText(distanceText + " m");
 
         } catch (JSONException e) {e.printStackTrace();}
