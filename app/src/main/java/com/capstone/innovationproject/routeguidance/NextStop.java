@@ -32,9 +32,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
-    private EditText urlText; //Network-testi
-    private TextView textView;
-
     Location sijainti;
     String vehicles = "";
     float Longitude = 0;
@@ -42,8 +39,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     String name = "";
     String key = "";
     String BusNumber;
-
-    //GetData getdata = new GetData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +50,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         testiTeksti = (TextView) findViewById(R.id.TextView05);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        //getdata.delegate = this;
-        //getdata.execute();
         updateData();
 
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -141,15 +134,8 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     }
 
     public void processFinish(String output){
-        //Here you will receive the result fired from async class
-        //of onPostExecute(result) method
-        //
-        //testiTeksti = (TextView) findViewById(R.id.TextView05);
-
         try {
-
             JSONObject jsonRootObject = new JSONObject(output);
-
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
             Location temp = new Location("temp");
@@ -181,19 +167,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         } catch (JSONException e) {e.printStackTrace();}
     }
 
-    /*public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        TextView output = (TextView) findViewById(R.id.textView1);
-
-        String in;
-        in = "{\"sys\":\"VM\",\"status\":\"OK\",\"servertime\":1454485792,\"result\":{\"responsetimestamp\":1454485787,\"producerref\":\"jlt\",\"responsemessageidentifier\":\"western-2743\",\"status\":true,\"moredata\":false,\"vehicles\":{\"550011\":{\"recordedattime\":1454485787,\"validuntiltime\":1454486387,\"linkdistance\":434,\"percentage\":70.28,\"lineref\":\"15\",\"directionref\":\"1\",\"publishedlinename\":\"15\",\"operatorref\":\"55\",\"originref\":\"246\",\"originname\":\"Saram\\u00e4ki\",\"destinationref\":\"1764\",\"destinationname\":\"Kakskerta\",\"originaimeddeparturetime\":1454484300,\"destinationaimedarrivaltime\":1454488320,\"monitored\":true,\"incongestion\":false,\"inpanic\":false,\"longitude\":22.273071,\"latitude\":60.464629,\"delay\":\"PT226S\",\"vehicleref\":\"550011\",\"previouscalls\":[{\"stoppointref\":\"272\",\"visitnumber\":31,\"stoppointname\":\"Saram\\u00e4entie\",\"aimedarrivaltime\":1454485560,\"aimeddeparturetime\":1454485560}],\"vehicleatstop\":false,\"next_stoppointref\":\"273\",\"next_stoppointname\":\"Saramaenpuisto\",\"next_destinationdisplay\":\"Kakskerta Brinkhallin kautta\",\"next_aimedarrivaltime\":1454485560,\"next_expectedarrivaltime\":1454485764,\"next_aimeddeparturetime\":1454485560,\"next_expecteddeparturetime\":1454485764,\"onwardcalls\":[{\"stoppointref\":\"202\",\"visitnumber\":33,\"stoppointname\":\"Oskarinkuja\",\"aimedarrivaltime\":1454485620,\"expectedarrivaltime\":1454485846,\"aimeddeparturetime\":1454485620,\"expecteddeparturetime\":1454485846}],\"bearing\":113},\"550013\":{\"recordedattime\":1454498526,\"validuntiltime\":1454499126,\"linkdistance\":728,\"percentage\":16.35,\"lineref\":\"15\",\"directionref\":\"2\",\"publishedlinename\":\"15\",\"operatorref\":\"55\",\"originref\":\"1764\",\"originname\":\"Kakskerta\",\"destinationref\":\"246\",\"destinationname\":\"Saram\\u00e4ki\",\"originaimeddeparturetime\":1454497800,\"destinationaimedarrivaltime\":1454502060,\"monitored\":true,\"incongestion\":false,\"inpanic\":false,\"longitude\":22.220189,\"latitude\":60.350547,\"delay\":\"PT174S\",\"vehicleref\":\"550013\",\"previouscalls\":[{\"stoppointref\":\"1288\",\"visitnumber\":17,\"stoppointname\":\"Myllykyl\\u00e4ntie\",\"aimedarrivaltime\":1454498340,\"aimeddeparturetime\":1454498340}],\"vehicleatstop\":false,\"next_stoppointref\":\"1289\",\"next_stoppointname\":\"Kierl\\u00e4ntie\",\"next_destinationdisplay\":\"Saram\\u00e4ki\",\"next_aimedarrivaltime\":1454498400,\"next_expectedarrivaltime\":1454498574,\"next_aimeddeparturetime\":1454498400,\"next_expecteddeparturetime\":1454498574,\"onwardcalls\":[{\"stoppointref\":\"1290\",\"visitnumber\":19,\"stoppointname\":\"Kes\\u00e4niementie\",\"aimedarrivaltime\":1454498460,\"expectedarrivaltime\":1454498634,\"aimeddeparturetime\":1454498460,\"expecteddeparturetime\":1454498634}],\"bearing\":115}},\"lastupdated\":1454485787}}";
-
-
-
-    }*/
-
     public void updateData() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -203,8 +176,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                     data.delegate = NextStop.this;
                     data.execute();
                 } catch (Exception e) {
-                    //testiTeksti.setText("Error. ");
-                    // TODO: handle exception
+
                 }
 
             }
