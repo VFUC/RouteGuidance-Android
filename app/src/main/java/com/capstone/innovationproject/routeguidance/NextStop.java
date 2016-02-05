@@ -35,12 +35,13 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private EditText urlText; //Network-testi
     private TextView textView;
 
+    Location sijainti;
     String vehicles = "";
     float Longitude = 0;
     float Latitude = 0;
     String name = "";
     String key = "";
-    int BusNumber;
+    String BusNumber;
 
     //GetData getdata = new GetData();
 
@@ -116,6 +117,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     public void onLocationChanged(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
+        sijainti = location;
         latituteField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));
     }
@@ -150,6 +152,8 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
 
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
+            Location temp = new Location("temp");
+            double distance = 10000, distancetemp;
 
             Iterator<String> iter = jsonVehicles.keys();
 
@@ -159,12 +163,19 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                 //String Vehicle = Integer.toString(550011);
                 JSONObject jsonNode = jsonVehicles.getJSONObject(key);
 
-                BusNumber = Integer.parseInt (jsonNode.optString("publishedlinename"));
+                BusNumber = jsonNode.optString("publishedlinename");
+                name = jsonNode.optString("next_stoppointname");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
-                name = jsonNode.optString("next_stoppointname");
+                temp.setLatitude(Latitude);
+                temp.setLongitude(Longitude);
+
+                distancetemp = sijainti.distanceTo(temp);
+                if(distancetemp < distance && distancetemp > 0) {
+                    distance = distancetemp;
+                    vehicles = "Bus number= "+ BusNumber + " : \n longitude= " + Longitude + " \n latitude= " + Latitude + " \n Name= " + name + " \n Distance= " + distance;
+                }
             }
-            vehicles += "Node"+ key + " : \n longitude= " + Longitude + " \n latitude= " + Latitude + " \n Name= " + name + " \n ";
             testiTeksti.setText(vehicles);
 
         } catch (JSONException e) {e.printStackTrace();}
