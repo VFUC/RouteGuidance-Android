@@ -24,30 +24,35 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NextStop extends AppCompatActivity implements LocationListener, AsyncResponse {
-    private TextView latituteField;
-    private TextView longitudeField;
-    private TextView testiTeksti;
+    //private TextView latituteField;
+    //private TextView longitudeField;
+    private TextView stopnameField;
+    private TextView busnumberField;
+    private TextView distanceField;
     private LocationManager locationManager;
     private String provider;
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
-    Location sijainti;
-    String vehicles = "";
-    float Longitude = 0;
-    float Latitude = 0;
-    String name = "";
-    String key = "";
-    String BusNumber;
+    private Location sijainti;
+    private String distanceText = "";
+    private float Longitude = 0;
+    private float Latitude = 0;
+    private String stopName = "";
+    private String key = "";
+    private String BusNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
 
-        latituteField = (TextView) findViewById(R.id.TextView02);
-        longitudeField = (TextView) findViewById(R.id.TextView04);
-        testiTeksti = (TextView) findViewById(R.id.TextView05);
+        //latituteField = (TextView) findViewById(R.id.TextView02);
+        //longitudeField = (TextView) findViewById(R.id.TextView04);
+        stopnameField = (TextView) findViewById(R.id.stopname);
+        busnumberField = (TextView) findViewById(R.id.busnumber);
+        distanceField = (TextView) findViewById(R.id.distance);
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         updateData();
@@ -69,8 +74,8 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         } else {
-            latituteField.setText("-");
-            longitudeField.setText("-");
+            //latituteField.setText("-");
+            //longitudeField.setText("-");
         }
     }
 
@@ -111,8 +116,8 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         sijainti = location;
-        latituteField.setText(String.valueOf(lat));
-        longitudeField.setText(String.valueOf(lng));
+        //latituteField.setText(String.valueOf(lat));
+        //longitudeField.setText(String.valueOf(lng));
     }
 
     @Override
@@ -146,23 +151,28 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             while (iter.hasNext()) {
 
                 key = iter.next();
-                //String Vehicle = Integer.toString(550011);
+
                 JSONObject jsonNode = jsonVehicles.getJSONObject(key);
 
+                //Get bus data
                 BusNumber = jsonNode.optString("publishedlinename");
-                name = jsonNode.optString("next_stoppointname");
+                stopName = jsonNode.optString("next_stoppointname");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
+
                 temp.setLatitude(Latitude);
                 temp.setLongitude(Longitude);
 
                 distancetemp = sijainti.distanceTo(temp);
                 if(distancetemp < distance && distancetemp > 0) {
                     distance = distancetemp;
-                    vehicles = "Bus number= "+ BusNumber + " : \n longitude= " + Longitude + " \n latitude= " + Latitude + " \n Name= " + name + " \n Distance= " + distance;
+                    distanceText = String.format("%.0f", distance) ;
+                    //distanceText = Double.toString(distance);
                 }
             }
-            testiTeksti.setText(vehicles);
+            stopnameField.setText(stopName);
+            busnumberField.setText(BusNumber);
+            distanceField.setText(distanceText + " m");
 
         } catch (JSONException e) {e.printStackTrace();}
     }
