@@ -25,8 +25,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NextStop extends AppCompatActivity implements LocationListener, AsyncResponse {
-    //private TextView latituteField;
-    //private TextView longitudeField;
     private TextView stopnameField;
     private TextView busnumberField;
     private TextView distanceField;
@@ -43,11 +41,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private String busNumberText = "";
     private String stopNameText = "";
     private String distanceText = "";
-    private float Longitude = 0;
-    private float Latitude = 0;
-    private String stopName = "";
-    private String key = "";
-    private String busNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +74,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         if (location != null) {
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
-        } else {
-            //latituteField.setText("-");
-            //longitudeField.setText("-");
         }
     }
 
@@ -121,16 +111,11 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
 
     @Override
     public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
         sijainti = location;
         hasBearing = location.hasBearing();
         if(hasBearing){
             bearing = location.getBearing();
         }
-
-        //latituteField.setText(String.valueOf(lat));
-        //longitudeField.setText(String.valueOf(lng));
     }
 
     @Override
@@ -152,6 +137,11 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     }
 
     public void processFinish(String output){
+        float Longitude;
+        float Latitude;
+        String stopName;
+        String key;
+        String busNumber;
         try {
             JSONObject jsonRootObject = new JSONObject(output);
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
@@ -217,9 +207,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                     GetData data = new GetData();
                     data.delegate = NextStop.this;
                     data.execute();
-                } catch (Exception e) {
-
-                }
+                } catch (Exception e) {e.printStackTrace();}
 
             }
         }, 0, 5000);
