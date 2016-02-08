@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +30,16 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private TextView stopnameField;
     private TextView busnumberField;
     private TextView distanceField;
+    private TextView bearingField; //debugging only
     private LocationManager locationManager;
     private String provider;
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
     private Location sijainti;
+    private float bearing;
+    private boolean hasBearing;
+
     private String busNumberText = "";
     private String stopNameText = "";
     private String distanceText = "";
@@ -54,6 +59,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         stopnameField = (TextView) findViewById(R.id.stopname);
         busnumberField = (TextView) findViewById(R.id.busnumber);
         distanceField = (TextView) findViewById(R.id.distance);
+        bearingField = (TextView) findViewById(R.id.hasbearing); //debugging only
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -118,6 +124,11 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         sijainti = location;
+        hasBearing = location.hasBearing();
+        if(hasBearing){
+            bearing = location.getBearing();
+        }
+
         //latituteField.setText(String.valueOf(lat));
         //longitudeField.setText(String.valueOf(lng));
     }
@@ -145,7 +156,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             JSONObject jsonRootObject = new JSONObject(output);
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
-            Location temp = new Location("temp");
+            Location busLocation = new Location("busLocation");
             double distance = 10000, distancetemp;
 
             Iterator<String> iter = jsonVehicles.keys();
@@ -153,6 +164,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             while (iter.hasNext()) {
 
                 key = iter.next();
+                float busBearing;
 
                 JSONObject jsonNode = jsonVehicles.getJSONObject(key);
 
@@ -161,21 +173,38 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                 stopName = jsonNode.optString("next_stoppointname");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
+                busBearing = Float.parseFloat(jsonNode.optString("bearing"));
 
-                temp.setLatitude(Latitude);
-                temp.setLongitude(Longitude);
+                busLocation.setLatitude(Latitude);
+                busLocation.setLongitude(Longitude);
 
-                distancetemp = sijainti.distanceTo(temp);
-                if(distancetemp < distance && distancetemp > 0) {
-                    distance = distancetemp;
-                    busNumberText = busNumber;
-                    stopNameText = stopName;
-                    distanceText = String.format("%.0f", distance) ;
+                if(sijainti != null) { //if we have user location
+                    distancetemp = sijainti.distanceTo(busLocation);
+                    if(hasBearing) {     //if we have bearing ignore towards busses
+                        if (distancetemp < distance && distancetemp > 0 &&
+                                busBearing - 90 < bearing && busBearing + 90 > bearing) {
+                            distance = distancetemp;
+                            busNumberText = busNumber;
+                            stopNameText = stopName;
+                            distanceText = String.format("%.0f", distance);
+                        }
+                        bearingField.setVisibility(View.VISIBLE);  //debugging only
+                    }
+                    else if(distancetemp < distance && distancetemp > 0){ //otherwise ignore bearing
+                        distance = distancetemp;
+                        busNumberText = busNumber;
+                        stopNameText = stopName;
+                        distanceText = String.format("%.0f", distance);
+                        bearingField.setVisibility(View.INVISIBLE);  //debugging only
+                    }
+                } else {
+                    busNumberText = "No location!";
+                    stopNameText = "";
                 }
             }
             stopnameField.setText(stopNameText);
             busnumberField.setText(busNumberText);
-            distanceField.setText(distanceText + " m");
+            distanceField.setText(distanceText);
 
         } catch (JSONException e) {e.printStackTrace();}
     }
