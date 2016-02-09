@@ -8,7 +8,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
         android:text="You are on bus"
-        android:textAlignment="center"
         android:layout_marginTop="45dp"
         android:id="@+id/textView1"
         android:textSize="40dp"
@@ -34,7 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40dp"
-        android:textAlignment="center"
         android:id="@+id/busnumber"
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
@@ -46,7 +44,6 @@
         android:textColor="#FFFFFF"
         android:textSize="40dp"
         android:text="Next bus stop"
-        android:textAlignment="center"
         android:id="@+id/textView2"
         android:layout_below="@+id/busnumber"
         android:layout_centerHorizontal="true"
@@ -56,7 +53,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40dp"
-        android:textAlignment="center"
         android:id="@+id/stopname"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
@@ -68,7 +64,6 @@
         android:textColor="#FFFFFF"
         android:textSize="40dp"
         android:text="Distance to bus"
-        android:textAlignment="center"
         android:id="@+id/textView3"
         android:layout_below="@+id/stopname"
         android:layout_centerHorizontal="true"
@@ -82,18 +77,17 @@
         android:id="@+id/distance"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textAlignment="center" />
+        android:layout_marginTop="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Has bearing"
+            android:textSize="15dp"
             android:id="@+id/hasbearing"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/distance"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="70dp"
-            android:textAlignment="center"
+            android:layout_marginTop="20dp"
             android:visibility="invisible" />
 
         <TextView
@@ -101,10 +95,10 @@
             android:layout_height="wrap_content"
             android:text="User bearing"
             android:id="@+id/bearing"
-            android:layout_alignParentBottom="true"
-android:layout_alignParentLeft="true"
-            android:layout_marginBottom="70dp"
-            android:textAlignment="center"
+            android:textSize="15dp"
+            android:layout_below="@+id/distance"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="20dp"
             android:visibility="visible" />
 
         <TextView
@@ -112,11 +106,11 @@ android:layout_alignParentLeft="true"
             android:layout_height="wrap_content"
             android:text="Bus bearing"
             android:id="@+id/busbearing"
+            android:textSize="15dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/distance"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="70dp"
-            android:textAlignment="center"
+            android:layout_marginTop="20dp"
             android:visibility="visible" />
     </RelativeLayout>
 </ScrollView>

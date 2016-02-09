@@ -176,7 +176,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                     distancetemp = sijainti.distanceTo(busLocation);
                     if(hasBearing) {     //if we have bearing ignore towards busses
                         if (distancetemp < distance && distancetemp > 0 &&
-                                busBearing - 90 < bearing && busBearing + 90 > bearing) {
+                                (busBearing - 90) < bearing && (busBearing + 90) > bearing) {
                             distance = distancetemp;
                             busNumberText = busNumber;
                             stopNameText = stopName;
