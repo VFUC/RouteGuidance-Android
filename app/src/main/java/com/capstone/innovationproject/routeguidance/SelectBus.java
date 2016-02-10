@@ -23,9 +23,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.ArrayList;
 
 
 public class SelectBus extends AppCompatActivity implements LocationListener, AsyncResponse{
@@ -130,7 +132,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     public void processFinish(String output) {
         float Longitude;
         float Latitude;
-        String stopName;
+        String busDestination;
         String key;
         String busNumber;
         GridView gridview = (GridView) findViewById(R.id.gridview);
@@ -143,7 +145,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
             Location busLocation = new Location("busLocation");
-            double distance = 10000, distancetemp;
+            int distance = 0;
+            ArrayList<Row> buses = new ArrayList<Row>();
 
             Iterator<String> iter = jsonVehicles.keys();
             while (iter.hasNext()) {
@@ -152,7 +155,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
                 //Get bus data
                 busNumber = jsonNode.optString("publishedlinename");
-                stopName = jsonNode.optString("next_stoppointname");
+                busDestination = jsonNode.optString("destinationname");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
@@ -163,26 +166,46 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 i++;                           // text array
 
 
-                /*if(sijainti != null) { //if we have user location
-                    distancetemp = sijainti.distanceTo(busLocation);
-                    if(distancetemp < distance && distancetemp > 0){
-                        distance = distancetemp;
-                        busNumberText = busNumber;
-                        stopNameText = stopName;
-                        distanceText = String.format("%.0f", distance);
-                    }
+                if(sijainti != null) { //if we have user location
+                    distance = Math.round(sijainti.distanceTo(busLocation));
+                    buses.add(new Row(distance, key, busNumber, busDestination));
                 } else {
-                    busNumberText = "No location!"; //
-                    stopNameText = "";
-                }*/
+                    buses.add(new Row(distance, key, busNumber, busDestination));
+                }
                 }
             //stopnameField.setText(stopNameText);
             //busnumberField.setText(busNumberText);
             //distanceField.setText(distanceText);
 
         } catch (JSONException e) {e.printStackTrace();}
+        Collections.sort(buses);
         gridview.setAdapter(new Adapter(this));             //Updates the gridview
     }
+
+    public class Row implements Comparable<Row>{
+        public String id;
+        public String busNumber;
+        public String busDestination;
+        public int distance;
+
+        public Row(int distance, String id, String busNumber, String busDestination) {
+            this.distance = distance;
+            this.id = id;
+            this.busNumber = busNumber;
+            this.busDestination = busDestination;
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+
+        @Override
+        public int compareTo(Row compareBuses) {
+            int compareDistance=((Row)compareBuses).getDistance();
+            return this.distance-compareDistance;
+        }
+    }
+
 
     public void updateData() {
         Timer timer = new Timer();
