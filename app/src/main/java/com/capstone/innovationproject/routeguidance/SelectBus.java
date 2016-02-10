@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -235,7 +236,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public int getCount() {
-            return 9;
+            return 12;
         }
 
         public Object getItem(int position) {
@@ -247,17 +248,19 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView tv, tv2;
+            TextView tv;
             if (convertView == null) {
                 tv = new TextView(context);
-                tv.setLayoutParams(new GridView.LayoutParams(85, 85));
+                tv.setLayoutParams(new GridView.LayoutParams(300, 400));
             }
             else {
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                tv.setText(buses.get(position).getBusNumber() + " - " + buses.get(position).getDistance());
-                //tv.setTextSize(30);
+                tv.setText(buses.get(position).getBusNumber() + " (" + buses.get(position).getDistance() + "m)");
+                tv.setTextSize(30);
+                //tv.setBackgroundColor(45555555);
+
             }
             return tv;
         }
