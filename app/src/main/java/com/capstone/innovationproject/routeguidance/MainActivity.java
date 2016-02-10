@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity {
                 i = new Intent(MainActivity.this, NextStop.class);
                 startActivity(i);
                 break;
+            case R.id.button:
+                i = new Intent(MainActivity.this, SelectBus.class);
+                startActivity(i);
+                break;
             default:
                 return;
         }
