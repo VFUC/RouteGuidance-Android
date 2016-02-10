@@ -3,6 +3,10 @@ package com.capstone.innovationproject.routeguidance;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +47,19 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
+
+        // vibration
+        final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(100);
+
+        // play notification sound
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //latituteField = (TextView) findViewById(R.id.TextView02);
         //longitudeField = (TextView) findViewById(R.id.TextView04);

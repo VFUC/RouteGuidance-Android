@@ -22,5 +22,6 @@
         <activity android:name=".NextStop" />
         <activity android:name=".SelectBus"></activity>
     </application>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
 </manifest>
