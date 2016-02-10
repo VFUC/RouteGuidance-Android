@@ -79,38 +79,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Has bearing"
-            android:textSize="15dp"
-            android:id="@+id/hasbearing"
-            android:layout_below="@+id/distance"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:visibility="invisible" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User bearing"
-            android:id="@+id/bearing"
-            android:textSize="15dp"
-            android:layout_below="@+id/distance"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="20dp"
-            android:visibility="visible" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bus bearing"
-            android:id="@+id/busbearing"
-            android:textSize="15dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/distance"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:visibility="visible" />
     </RelativeLayout>
 </ScrollView>
