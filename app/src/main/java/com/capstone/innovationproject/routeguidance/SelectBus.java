@@ -40,6 +40,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     private String stopNameText = "";
     private String distanceText = "";
     private String[] texts = {"aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg", "hhh", "iii"};
+    ArrayList<Row> buses = new ArrayList<Row>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
             Location busLocation = new Location("busLocation");
             int distance = 0;
-            ArrayList<Row> buses = new ArrayList<Row>();
+            buses.clear();
 
             Iterator<String> iter = jsonVehicles.keys();
             while (iter.hasNext()) {
@@ -162,8 +163,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 busLocation.setLatitude(Latitude);
                 busLocation.setLongitude(Longitude);
 
-                if(i<9) texts[i] = busNumber;  // Prints first 9 busnumbers to gridview
-                i++;                           // text array
+                //if(i<9) texts[i] = busNumber;  // Prints first 9 busnumbers to gridview
+                //i++;                           // text array
 
 
                 if(sijainti != null) { //if we have user location
@@ -197,6 +198,10 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
         public int getDistance() {
             return distance;
+        }
+
+        public String getBusNumber() {
+            return busNumber;
         }
 
         @Override
@@ -250,7 +255,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             else {
                 tv = (TextView) convertView;
             }
-            tv.setText(texts[position]);
+            if(!buses.isEmpty()) tv.setText(buses.get(position).getBusNumber());
             return tv;
         }
     }
