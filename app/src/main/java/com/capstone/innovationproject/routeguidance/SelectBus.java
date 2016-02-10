@@ -247,7 +247,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView tv;
+            TextView tv, tv2;
             if (convertView == null) {
                 tv = new TextView(context);
                 tv.setLayoutParams(new GridView.LayoutParams(85, 85));
@@ -255,7 +255,10 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             else {
                 tv = (TextView) convertView;
             }
-            if(!buses.isEmpty()) tv.setText(buses.get(position).getBusNumber());
+            if(!buses.isEmpty()) {
+                tv.setText(buses.get(position).getBusNumber() + " - " + buses.get(position).getDistance());
+                //tv.setTextSize(30);
+            }
             return tv;
         }
     }
