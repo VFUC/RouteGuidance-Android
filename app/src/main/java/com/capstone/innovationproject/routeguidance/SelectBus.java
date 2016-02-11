@@ -2,7 +2,9 @@ package com.capstone.innovationproject.routeguidance;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -77,6 +79,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                                     int position, long id) {
                 Toast.makeText(SelectBus.this, "" + position,
                         Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(SelectBus.this, NextStop.class);
+                startActivity(i);
             }
         });
 
@@ -259,8 +263,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             if(!buses.isEmpty()) {
                 tv.setText(buses.get(position).getBusNumber() + " (" + buses.get(position).getDistance() + "m)");
                 tv.setTextSize(30);
-                //tv.setBackgroundColor(45555555);
-
+                tv.setBackgroundColor(Color.rgb(234, 160, 0));
             }
             return tv;
         }

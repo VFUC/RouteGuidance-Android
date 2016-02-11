@@ -39,7 +39,6 @@
         android:id="@+id/button"
         android:onClick="onClick"
         android:layout_above="@+id/button1Main"
-        android:layout_alignRight="@+id/button1Main"
-        android:layout_alignEnd="@+id/button1Main" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
