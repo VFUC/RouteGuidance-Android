@@ -149,7 +149,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         float Longitude;
         float Latitude;
         String stopName;
-        String key;
+        String key = "";
         String busNumber;
         try {
             JSONObject jsonRootObject = new JSONObject(output);
@@ -157,37 +157,35 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
             Location busLocation = new Location("busLocation");
             double distance = 10000, distancetemp;
-
-            Iterator<String> iter = jsonVehicles.keys();
-
-            while (iter.hasNext()) {
-
-                key = iter.next();
-
-                JSONObject jsonNode = jsonVehicles.getJSONObject(key);
-
-                //Get bus data
-                busNumber = jsonNode.optString("publishedlinename");
-                stopName = jsonNode.optString("next_stoppointname");
-                Longitude = Float.parseFloat(jsonNode.optString("longitude"));
-                Latitude = Float.parseFloat(jsonNode.optString("latitude"));
-
-                busLocation.setLatitude(Latitude);
-                busLocation.setLongitude(Longitude);
-
-                if(sijainti != null) { //if we have user location
-                    distancetemp = sijainti.distanceTo(busLocation);
-                    if(distancetemp < distance && distancetemp > 0){
-                        distance = distancetemp;
-                        busNumberText = busNumber;
-                        stopNameText = stopName;
-                        distanceText = String.format("%.0f", distance);
-                    }
-                } else {
-                    busNumberText = "No location!"; //
-                    stopNameText = "";
-                }
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                key = bundle.getString("id");
             }
+
+            JSONObject jsonNode = jsonVehicles.getJSONObject(key);
+
+            //Get bus data
+            busNumber = jsonNode.optString("publishedlinename");
+            stopName = jsonNode.optString("next_stoppointname");
+            Longitude = Float.parseFloat(jsonNode.optString("longitude"));
+            Latitude = Float.parseFloat(jsonNode.optString("latitude"));
+
+            busLocation.setLatitude(Latitude);
+            busLocation.setLongitude(Longitude);
+
+            if(sijainti != null) { //if we have user location
+                distancetemp = sijainti.distanceTo(busLocation);
+                if(distancetemp < distance && distancetemp > 0){
+                    distance = distancetemp;
+                    busNumberText = busNumber;
+                    stopNameText = stopName;
+                    distanceText = key;
+                }
+            } else {
+                busNumberText = "No location!"; //
+                stopNameText = "";
+            }
+
             stopnameField.setText(stopNameText);
             busnumberField.setText(busNumberText);
             distanceField.setText(distanceText);

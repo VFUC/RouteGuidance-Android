@@ -39,10 +39,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
     private Location sijainti;
-    private String busNumberText = "";
-    private String stopNameText = "";
-    private String distanceText = "";
-    private String[] texts = {"aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg", "hhh", "iii"};
+    private String busId = "";
     ArrayList<Row> buses = new ArrayList<Row>();
 
     @Override
@@ -79,7 +76,11 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                                     int position, long id) {
                 Toast.makeText(SelectBus.this, "" + position,
                         Toast.LENGTH_SHORT).show();
+                busId = buses.get(position).getBusId();
                 Intent i = new Intent(SelectBus.this, NextStop.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", busId);
+                i.putExtras(bundle);
                 startActivity(i);
             }
         });
@@ -168,35 +169,27 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 busLocation.setLatitude(Latitude);
                 busLocation.setLongitude(Longitude);
 
-                //if(i<9) texts[i] = busNumber;  // Prints first 9 busnumbers to gridview
-                //i++;                           // text array
-
-
                 if(sijainti != null) { //if we have user location
                     distance = Math.round(sijainti.distanceTo(busLocation));
                     buses.add(new Row(distance, key, busNumber, busDestination));
                 } else {
                     buses.add(new Row(distance, key, busNumber, busDestination));
                 }
-                }
-            //stopnameField.setText(stopNameText);
-            //busnumberField.setText(busNumberText);
-            //distanceField.setText(distanceText);
-
+            }
         } catch (JSONException e) {e.printStackTrace();}
         Collections.sort(buses);
         gridview.setAdapter(new Adapter(this));             //Updates the gridview
     }
 
     public class Row implements Comparable<Row>{
-        public String id;
+        public String busId;
         public String busNumber;
         public String busDestination;
         public int distance;
 
         public Row(int distance, String id, String busNumber, String busDestination) {
             this.distance = distance;
-            this.id = id;
+            this.busId = id;
             this.busNumber = busNumber;
             this.busDestination = busDestination;
         }
@@ -207,6 +200,10 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
         public String getBusNumber() {
             return busNumber;
+        }
+
+        public String getBusId() {
+            return busId;
         }
 
         @Override
@@ -261,9 +258,9 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                tv.setText(buses.get(position).getBusNumber() + " (" + buses.get(position).getDistance() + "m)");
+                tv.setText("" + buses.get(position).getBusNumber() + "\n " + buses.get(position).getBusId());
                 tv.setTextSize(30);
-                tv.setBackgroundColor(Color.rgb(234, 160, 0));
+                tv.setBackgroundColor(Color.rgb(234, 171, 0));
             }
             return tv;
         }
