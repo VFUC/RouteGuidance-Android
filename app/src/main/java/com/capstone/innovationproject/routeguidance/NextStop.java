@@ -179,7 +179,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                     distance = distancetemp;
                     busNumberText = busNumber;
                     stopNameText = stopName;
-                    distanceText = key;
+                    distanceText = String.format("%.0f", distance);
                 }
             } else {
                 busNumberText = "No location!"; //

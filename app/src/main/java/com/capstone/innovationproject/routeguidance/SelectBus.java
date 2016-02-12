@@ -258,7 +258,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                tv.setText("" + buses.get(position).getBusNumber() + "\n " + buses.get(position).getBusId());
+                tv.setText("" + buses.get(position).getBusNumber() + "\n " + buses.get(position).getDistance());
                 tv.setTextSize(30);
                 tv.setBackgroundColor(Color.rgb(234, 171, 0));
             }
