@@ -29,6 +29,7 @@
         android:text="Next bus stop"
         android:id="@+id/button1Main"
         android:onClick="onClick"
+        android:visibility="invisible"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
