@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,6 +47,9 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_bus);
+
+        /*ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();*/
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         updateData();
@@ -237,7 +241,6 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
         public Adapter(Context context) {
             this.context = context;
-
         }
 
         public int getCount() {
@@ -265,7 +268,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n(" + buses.get(position).getDistance() + " m)");
                 tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
-                tv.setBackgroundColor(Color.rgb(234, 171, 0));
+                tv.setBackgroundColor(Color.rgb(234, 160, 0));
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
             return tv;
         }

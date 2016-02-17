@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -47,6 +49,9 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.show();
 
         // vibration
         final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
