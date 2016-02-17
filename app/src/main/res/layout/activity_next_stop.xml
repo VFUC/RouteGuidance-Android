@@ -33,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40dp"
+        android:textColor="#FFFFFF"
         android:id="@+id/busnumber"
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
@@ -54,6 +55,7 @@
         android:layout_height="wrap_content"
         android:textSize="40dp"
         android:id="@+id/stopname"
+        android:textColor="#FFFFFF"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
@@ -74,6 +76,7 @@
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:text=""
+        android:textColor="#FFFFFF"
         android:id="@+id/distance"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"

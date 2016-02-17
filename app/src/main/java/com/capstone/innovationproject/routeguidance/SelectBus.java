@@ -166,6 +166,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
+
                 busLocation.setLatitude(Latitude);
                 busLocation.setLongitude(Longitude);
 
@@ -192,11 +193,14 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             this.busId = id;
             this.busNumber = busNumber;
             this.busDestination = busDestination;
+
         }
 
         public int getDistance() {
             return distance;
         }
+
+        public String getBusDestination() { return busDestination; }
 
         public String getBusNumber() {
             return busNumber;
@@ -258,8 +262,9 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                tv.setText("" + buses.get(position).getBusNumber() + "\n " + buses.get(position).getDistance());
-                tv.setTextSize(30);
+                tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n(" + buses.get(position).getDistance() + " m)");
+                tv.setTextSize(20);
+                tv.setTextColor(Color.rgb(255, 255, 255));
                 tv.setBackgroundColor(Color.rgb(234, 171, 0));
             }
             return tv;
