@@ -9,14 +9,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Jussi on 3.2.2016.
- *
- */
-
 public class GetData extends AsyncTask<String, String, String> {
     public AsyncResponse delegate = null;
     HttpURLConnection urlConnection;
+    public URL url;
+
+    public GetData(URL urli) {
+        url = urli;
+    }
 
     @Override
     protected String doInBackground(String... args) {
@@ -24,7 +24,7 @@ public class GetData extends AsyncTask<String, String, String> {
         StringBuilder result = new StringBuilder();
 
             try {
-                URL url = new URL("http://data.foli.fi/siri/vm"); //osoite mistä haetaan
+                //URL url = new URL("http://data.foli.fi/siri/vm"); //osoite mistä haetaan
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

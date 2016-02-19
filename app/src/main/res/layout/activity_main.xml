@@ -41,5 +41,4 @@
         android:onClick="onClick"
         android:layout_above="@+id/button1Main"
         android:layout_centerHorizontal="true" />
-
 </RelativeLayout>
