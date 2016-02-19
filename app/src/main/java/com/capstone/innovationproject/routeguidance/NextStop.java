@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -154,7 +155,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     public void onProviderEnabled(String provider) {
         Toast.makeText(this, "Enabled new provider " + provider,
                 Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -216,7 +216,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 try {
-                    GetData data = new GetData();
+                    GetData data = new GetData(new URL("http://data.foli.fi/siri/vm"));
                     data.delegate = NextStop.this;
                     data.execute();
                 } catch (Exception e) {e.printStackTrace();}

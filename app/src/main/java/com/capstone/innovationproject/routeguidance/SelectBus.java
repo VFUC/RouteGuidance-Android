@@ -27,12 +27,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
-
 
 public class SelectBus extends AppCompatActivity implements LocationListener, AsyncResponse{
     private LocationManager locationManager;
@@ -221,13 +221,12 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
     }
 
-
     public void updateData() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 try {
-                    GetData data = new GetData();
+                    GetData data = new GetData(new URL("http://data.foli.fi/siri/vm"));
                     data.delegate = SelectBus.this;
                     data.execute();
                 } catch (Exception e) {e.printStackTrace();}
