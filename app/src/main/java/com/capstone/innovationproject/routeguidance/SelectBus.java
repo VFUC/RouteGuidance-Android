@@ -48,8 +48,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_bus);
 
-        /*ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();*/
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         updateData();

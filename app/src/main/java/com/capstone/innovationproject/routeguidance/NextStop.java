@@ -100,7 +100,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     public void onClick(View v){
         Intent i;
         switch (v.getId()){
-            case R.id.button1Main:
+            case R.id.button2:
                 i = new Intent(NextStop.this, SelectDestination.class);
                 startActivity(i);
                 break;
