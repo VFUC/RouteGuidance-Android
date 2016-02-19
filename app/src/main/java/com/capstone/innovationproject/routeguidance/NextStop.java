@@ -1,6 +1,7 @@
 package com.capstone.innovationproject.routeguidance;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.media.Ringtone;
@@ -51,7 +52,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         setContentView(R.layout.activity_next_stop);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.show();
+        actionBar.hide();
 
         // vibration
         final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -92,6 +93,18 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         if (location != null) {
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
+        }
+    }
+
+    public void onClick(View v){
+        Intent i;
+        switch (v.getId()){
+            case R.id.button1Main:
+                i = new Intent(NextStop.this, SelectDestination.class);
+                startActivity(i);
+                break;
+            default:
+                return;
         }
     }
 
