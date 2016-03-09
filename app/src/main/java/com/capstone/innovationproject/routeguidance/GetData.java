@@ -24,7 +24,6 @@ public class GetData extends AsyncTask<String, String, String> {
         StringBuilder result = new StringBuilder();
 
             try {
-                //URL url = new URL("http://data.foli.fi/siri/vm"); //osoite mistä haetaan
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 

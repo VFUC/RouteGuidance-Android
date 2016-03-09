@@ -8,6 +8,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,6 +49,9 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private String stopNameText = "";
     private String distanceText = "";
 
+    TextToSpeech t1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,18 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(new Locale("fi_FI"));
+                }
+            }
+        });
+
+
 
         // vibration
         final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -99,6 +116,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
 
     public void onClick(View v){
         Intent i;
+        t1.speak("Moi vaan kaikille", TextToSpeech.QUEUE_FLUSH, null, null);
         switch (v.getId()){
             case R.id.button2:
                 i = new Intent(NextStop.this, SelectDestination.class);

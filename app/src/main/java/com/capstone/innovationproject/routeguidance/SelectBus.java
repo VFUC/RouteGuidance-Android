@@ -169,7 +169,6 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
-
                 busLocation.setLatitude(Latitude);
                 busLocation.setLongitude(Longitude);
 

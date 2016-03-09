@@ -1,9 +1,18 @@
 package com.capstone.innovationproject.routeguidance;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +28,9 @@ import java.util.TimerTask;
 public class SelectDestination extends AppCompatActivity implements AsyncResponse {
     ArrayList<Row> stops = new ArrayList<>();
 
+    ArrayList<String> listItems=new ArrayList<String>();
+    ArrayAdapter<String> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,17 +39,23 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        ListView lv = (ListView)findViewById(R.id.listView);
 
+        adapter=new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                listItems);
+        lv.setAdapter(adapter);
     }
 
     public void processFinish(String output) {
         String key;
         String busStop;
-
+        ListView listview = (ListView) findViewById(R.id.listView);
 
         int i=0;
 
         try {
+            stops.clear();
             JSONObject jsonRootObject = new JSONObject(output);
 
             Iterator<String> iter = jsonRootObject.keys();
@@ -54,6 +72,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 return v1.getStopName().compareTo(v2.getStopName());
             }
         });
+        listview.setAdapter(new Adapter(this));
     }
 
     public class Row {
@@ -91,9 +110,46 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }, 0, 10000);
     }
 
+    class Adapter extends BaseAdapter {
+        private Context context;
+
+        public Adapter(Context context) {
+            this.context = context;
+        }
+
+        public int getCount() {
+            return 12;
+        }
+
+        public Object getItem(int position) {
+            return null;
+        }
+
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView tv;
+            if (convertView == null) {
+                tv = new TextView(context);
+                //tv.setLayoutParams(new GridView.LayoutParams(300, 400));
+            }
+            else {
+                tv = (TextView) convertView;
+            }
+            if(!stops.isEmpty()) {
+                tv.setText("" + stops.get(position).getStopName() + "\n");
+                //tv.setTextSize(20);
+                tv.setTextColor(Color.rgb(255, 255, 255));
+                //tv.setBackgroundColor(Color.rgb(234, 160, 0));
+                //tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            }
+            return tv;
+        }
+    }
 }
