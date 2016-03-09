@@ -34,7 +34,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class NextStop extends AppCompatActivity implements LocationListener, AsyncResponse {
+public class NextStop extends AppCompatActivity implements AsyncResponse {
     private TextView stopnameField;
     private TextView busnumberField;
     private TextView distanceField;
@@ -43,11 +43,10 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
-    private Location sijainti;
-
     private String busNumberText = "";
     private String stopNameText = "";
     private String distanceText = "";
+    private String busId = "";
 
     TextToSpeech t1;
 
@@ -60,6 +59,10 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            busId = bundle.getString("id");
+        }
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -69,8 +72,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
                 }
             }
         });
-
-
 
         // vibration
         final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -85,41 +86,22 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             e.printStackTrace();
         }
 
-        //latituteField = (TextView) findViewById(R.id.TextView02);
-        //longitudeField = (TextView) findViewById(R.id.TextView04);
         stopnameField = (TextView) findViewById(R.id.stopname);
         busnumberField = (TextView) findViewById(R.id.busnumber);
         distanceField = (TextView) findViewById(R.id.distance);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         updateData();
-
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    MY_PERMISSION_ACCESS_FINE_LOCATION);
-        }
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MY_PERMISSION_ACCESS_COARSE_LOCATION);
-        }
-
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
-            onLocationChanged(location);
-        }
     }
 
     public void onClick(View v){
         Intent i;
-        t1.speak("Moi vaan kaikille", TextToSpeech.QUEUE_FLUSH, null, null);
+        //t1.speak("TTS testi", TextToSpeech.QUEUE_FLUSH, null, null);
         switch (v.getId()){
             case R.id.button2:
                 i = new Intent(NextStop.this, SelectDestination.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", busId);
+                i.putExtras(bundle);
                 startActivity(i);
                 break;
             default:
@@ -130,55 +112,6 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
     @Override
     protected void onResume() {
         super.onResume();
-
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    MY_PERMISSION_ACCESS_FINE_LOCATION);
-        }
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MY_PERMISSION_ACCESS_COARSE_LOCATION);
-        }
-
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                    MY_PERMISSION_ACCESS_FINE_LOCATION);
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MY_PERMISSION_ACCESS_COARSE_LOCATION);
-        }
-
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        sijainti = location;
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Toast.makeText(this, "Enabled new provider " + provider,
-                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(this, "Disabled provider " + provider,
-                Toast.LENGTH_SHORT).show();
     }
 
     public void processFinish(String output){
@@ -196,6 +129,7 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
                 key = bundle.getString("id");
+                busId = bundle.getString("id");
             }
 
             JSONObject jsonNode = jsonVehicles.getJSONObject(key);
@@ -209,18 +143,9 @@ public class NextStop extends AppCompatActivity implements LocationListener, Asy
             busLocation.setLatitude(Latitude);
             busLocation.setLongitude(Longitude);
 
-            if(sijainti != null) { //if we have user location
-                distancetemp = sijainti.distanceTo(busLocation);
-                if(distancetemp < distance && distancetemp > 0){
-                    distance = distancetemp;
-                    busNumberText = busNumber;
-                    stopNameText = stopName;
-                    distanceText = String.format("%.0f", distance);
-                }
-            } else {
-                busNumberText = "No location!"; //
-                stopNameText = "";
-            }
+            busNumberText = busNumber;
+            stopNameText = stopName;
+            distanceText = String.format("");
 
             stopnameField.setText(stopNameText);
             busnumberField.setText(busNumberText);

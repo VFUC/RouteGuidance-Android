@@ -77,8 +77,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(SelectBus.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SelectBus.this, "" + position,
+                //        Toast.LENGTH_SHORT).show();
                 busId = buses.get(position).getBusId();
                 Intent i = new Intent(SelectBus.this, NextStop.class);
                 Bundle bundle = new Bundle();
@@ -256,7 +256,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             TextView tv;
             if (convertView == null) {
                 tv = new TextView(context);
-                tv.setLayoutParams(new GridView.LayoutParams(300, 400));
+                tv.setLayoutParams(new GridView.LayoutParams(400, 400));
             }
             else {
                 tv = (TextView) convertView;

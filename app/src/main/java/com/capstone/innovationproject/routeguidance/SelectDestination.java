@@ -1,6 +1,7 @@
 package com.capstone.innovationproject.routeguidance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -21,25 +23,52 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class SelectDestination extends AppCompatActivity implements AsyncResponse {
     ArrayList<Row> stops = new ArrayList<>();
+    ArrayList<String> stopsS = new ArrayList<>();
 
     ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
+    private String stoppi;
+    private String busId = "";
+    public int stopcount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_destination);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            busId = bundle.getString("id");
+        }
+
         updateData();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
         ListView lv = (ListView)findViewById(R.id.listView);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                //Toast.makeText(SelectBus.this, "" + position,
+                //        Toast.LENGTH_SHORT).show();
+                stoppi = stops.get(position).toString();
+                Intent i = new Intent(SelectDestination.this, NextStop.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("stopname", stoppi);
+                bundle.putString("id", busId);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
 
         adapter=new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
@@ -56,6 +85,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
 
         try {
             stops.clear();
+            stopsS.clear();
             JSONObject jsonRootObject = new JSONObject(output);
 
             Iterator<String> iter = jsonRootObject.keys();
@@ -64,6 +94,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 JSONObject jsonBusStop = jsonRootObject.optJSONObject(key);
                 busStop = jsonBusStop.optString("stop_name");
                 stops.add(new Row(key, busStop));
+                stopsS.add(busStop);
             }
         } catch (JSONException e) {
             e.printStackTrace();}
@@ -72,6 +103,18 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 return v1.getStopName().compareTo(v2.getStopName());
             }
         });
+        Collections.sort(stops, new Comparator<Row>() {
+            public int compare(Row v1, Row v2) {
+                return v1.getStopName().compareTo(v2.getStopName());
+            }
+        });
+
+        Set<String> hs = new HashSet<>();
+        hs.addAll(stopsS);
+        stopsS.clear();
+        stopsS.addAll(hs);
+        Collections.sort(stopsS);
+        stopcount = stopsS.size();
         listview.setAdapter(new Adapter(this));
     }
 
@@ -90,19 +133,9 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         }
 
         public String getStopName() { return stopName; }
-
-        /*@Override
-        public int compareTo(Row compareStops) {
-            String compareStopNames=((Row)compareStops).getStopName();
-            return this.stopName-compareStopNames;
-            //return o1.get(0).compareTo(o2.get(0));
-        }*/
     }
 
     public void updateData() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
                 try {
                     GetData data = new GetData(new URL("http://data.foli.fi/siri/sm"));
                     data.delegate = SelectDestination.this;
@@ -110,8 +143,6 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        }, 0, 10000);
     }
 
     class Adapter extends BaseAdapter {
@@ -122,7 +153,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         }
 
         public int getCount() {
-            return 12;
+            return stopcount-1;
         }
 
         public Object getItem(int position) {
@@ -142,9 +173,9 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             else {
                 tv = (TextView) convertView;
             }
-            if(!stops.isEmpty()) {
-                tv.setText("" + stops.get(position).getStopName() + "\n");
-                //tv.setTextSize(20);
+            if(!stopsS.isEmpty()) {
+                tv.setText(stopsS.get(position));
+                tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
                 //tv.setBackgroundColor(Color.rgb(234, 160, 0));
                 //tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
