@@ -83,6 +83,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 Intent i = new Intent(SelectBus.this, NextStop.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("id", busId);
+                bundle.putString("busnumber", buses.get(position).getBusNumber());
+                bundle.putString("blockref", buses.get(position).blockref);
                 i.putExtras(bundle);
                 startActivity(i);
             }
@@ -145,6 +147,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         String busDestination;
         String key;
         String busNumber;
+        String block;
         GridView gridview = (GridView) findViewById(R.id.gridview);
 
 
@@ -166,6 +169,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 //Get bus data
                 busNumber = jsonNode.optString("publishedlinename");
                 busDestination = jsonNode.optString("destinationname");
+                block = jsonNode.optString("blockref");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
@@ -174,9 +178,9 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
                 if(sijainti != null) { //if we have user location
                     distance = Math.round(sijainti.distanceTo(busLocation));
-                    buses.add(new Row(distance, key, busNumber, busDestination));
+                    buses.add(new Row(distance, key, busNumber, busDestination, block));
                 } else {
-                    buses.add(new Row(distance, key, busNumber, busDestination));
+                    buses.add(new Row(distance, key, busNumber, busDestination, block));
                 }
             }
         } catch (JSONException e) {e.printStackTrace();}
@@ -188,14 +192,15 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         public String busId;
         public String busNumber;
         public String busDestination;
+        public String blockref;
         public int distance;
 
-        public Row(int distance, String id, String busNumber, String busDestination) {
+        public Row(int distance, String id, String busNumber, String busDestination, String blockref) {
             this.distance = distance;
             this.busId = id;
             this.busNumber = busNumber;
             this.busDestination = busDestination;
-
+            this.blockref = blockref;
         }
 
         public int getDistance() {
@@ -262,7 +267,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n(" + buses.get(position).getDistance() + " m)");
+                if(buses.size()>position) tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n(" + buses.get(position).getDistance() + " m)");
                 tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
                 tv.setBackgroundColor(Color.rgb(234, 160, 0));

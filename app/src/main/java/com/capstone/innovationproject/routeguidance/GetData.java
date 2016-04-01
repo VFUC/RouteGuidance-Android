@@ -20,9 +20,7 @@ public class GetData extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... args) {
-
         StringBuilder result = new StringBuilder();
-
             try {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -39,7 +37,6 @@ public class GetData extends AsyncTask<String, String, String> {
             } finally {
                 urlConnection.disconnect();
             }
-
             return result.toString();
 
     }

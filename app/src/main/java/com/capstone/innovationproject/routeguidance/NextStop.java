@@ -47,6 +47,8 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
     private String stopNameText = "";
     private String distanceText = "";
     private String busId = "";
+    private String busNumber = "";
+    private String blockref = "";
 
     TextToSpeech t1;
 
@@ -62,6 +64,8 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             busId = bundle.getString("id");
+            busNumber = bundle.getString("busnumber");
+            blockref = bundle.getString("blockref");
         }
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -101,6 +105,8 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 i = new Intent(NextStop.this, SelectDestination.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("id", busId);
+                bundle.putString("busNumber", busNumber);
+                bundle.putString("blockref", blockref);
                 i.putExtras(bundle);
                 startActivity(i);
                 break;

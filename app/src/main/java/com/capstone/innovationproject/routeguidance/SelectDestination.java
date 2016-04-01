@@ -3,9 +3,11 @@ package com.capstone.innovationproject.routeguidance;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -16,9 +18,15 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,13 +38,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SelectDestination extends AppCompatActivity implements AsyncResponse {
+    private static final String TAG = SelectDestination.class.getSimpleName();
     ArrayList<Row> stops = new ArrayList<>();
     ArrayList<String> stopsS = new ArrayList<>();
 
     ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
     private String stoppi;
-    private String busId = "";
+    private String busId = "", blockref="", busNumber="";
     public int stopcount = 0;
 
     @Override
@@ -47,9 +56,12 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             busId = bundle.getString("id");
+            blockref = bundle.getString("blockref");
+            busNumber = bundle.getString("busNumber");
         }
+        //getRoute();
 
-        updateData();
+        //updateData();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
@@ -65,15 +77,17 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 Bundle bundle = new Bundle();
                 bundle.putString("stopname", stoppi);
                 bundle.putString("id", busId);
+                bundle.putString("busNumber", busNumber);
                 i.putExtras(bundle);
                 startActivity(i);
             }
         });
-
+        //getRoute();
         adapter=new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
         lv.setAdapter(adapter);
+        getRoute();
     }
 
     public void processFinish(String output) {
@@ -93,7 +107,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 key = iter.next();
                 JSONObject jsonBusStop = jsonRootObject.optJSONObject(key);
                 busStop = jsonBusStop.optString("stop_name");
-                stops.add(new Row(key, busStop));
+                stops.add   (new Row(key, busStop));
                 stopsS.add(busStop);
             }
         } catch (JSONException e) {
@@ -116,6 +130,140 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         Collections.sort(stopsS);
         stopcount = stopsS.size();
         listview.setAdapter(new Adapter(this));
+    }
+
+    public String getRoute() {
+        URL url;
+        ListView listview = (ListView) findViewById(R.id.listView);
+        String latest, route_id="", trip_id="", stopsxml="";
+        StringBuilder sb = new StringBuilder();
+        String result = new String();
+
+        try {
+            //latest version
+            url = new URL("http://data.foli.fi/gtfs");
+            Log.d(TAG, url.toString());
+            result = new loadXml(url).execute().get();
+            Log.d(TAG, "XML downloaded");
+            Log.d(TAG, result);
+            JSONObject jsonRootObject = new JSONObject(result.toString());
+            latest = jsonRootObject.getString("latest");
+            Log.d(TAG, "latest = " + latest);
+
+            //get route_id with short_name (bus number)
+            sb.append("http://data.foli.fi/gtfs/v0/"); sb.append(latest); sb.append("/routes");
+            url = new URL(sb.toString());
+            Log.d(TAG, url.toString());
+            result = new loadXml(url).execute().get();
+            Log.d(TAG, "XML downloaded");
+            Log.d(TAG, result);
+
+            Log.d(TAG, "Id = " + busId);
+            Log.d(TAG, "busNumber = " + busNumber);
+
+            JSONArray jsonArray = new JSONArray(result.toString());
+            for(int i=0; i<jsonArray.length(); i++) {
+                JSONObject e = jsonArray.getJSONObject(i);
+                if(e.getString("route_short_name").equals(busNumber)) route_id=e.getString("route_id");
+            }
+            Log.d(TAG, "route_id = " + route_id);
+
+            sb.setLength(0); //clearing stringbuilder so we can use it again
+            sb.append("http://data.foli.fi/gtfs/v0/"); sb.append(latest); sb.append("/trips/route/"); sb.append(route_id);
+            url = new URL(sb.toString());
+            Log.d(TAG, url.toString());
+            result = new loadXml(url).execute().get();
+            Log.d(TAG, "XML downloaded");
+            Log.d(TAG, result);
+
+            //search blockid and save tripid
+            Log.d(TAG, "block_id = " + blockref);
+            jsonArray = new JSONArray(result.toString());
+            for(int i=0; i<jsonArray.length(); i++) {
+                JSONObject e = jsonArray.getJSONObject(i);
+                if(e.getString("block_id").equals(blockref)) trip_id=e.getString("trip_id");
+            }
+            Log.d(TAG, "trip_id = " + trip_id);
+
+            sb.setLength(0);
+            sb.append("http://data.foli.fi/gtfs/v0/"); sb.append(latest); sb.append("/stop_times/trip/"); sb.append(trip_id);
+            url = new URL(sb.toString());
+            Log.d(TAG, url.toString());
+            result = new loadXml(url).execute().get();
+            Log.d(TAG, "XML downloaded");
+            Log.d(TAG, result);
+
+            url = new URL("http://data.foli.fi/siri/sm");
+            Log.d(TAG, url.toString());
+            stopsxml = new loadXml(url).execute().get();
+            Log.d(TAG, "XML downloaded");
+            Log.d(TAG, stopsxml);
+            jsonArray = new JSONArray(result.toString());
+
+            JSONObject jsonObject = new JSONObject(stopsxml);
+
+            for(int i=0; i<jsonArray.length(); i++) {
+                JSONObject e = jsonArray.getJSONObject(i);
+                Iterator<String> iter = jsonObject.keys();
+                while (iter.hasNext()) {
+                    String key = iter.next();
+                    JSONObject jsonNode = jsonObject.getJSONObject(key);
+                    if(key.toString().equals(e.getString("stop_id"))) stopsS.add(jsonNode.optString("stop_name"));
+                }
+
+                Set<String> hs = new HashSet<>();
+                hs.addAll(stopsS);
+                stopsS.clear();
+                stopsS.addAll(hs);
+
+                //stops.add(new Row(e.getString("stop_id"), e.getString("stop_id")));
+                //stopsS.add(e.getString("stop_id"));
+                Log.d(TAG, e.getString("stop_id"));
+            }
+            stopcount = stopsS.size();
+            listview.setAdapter(new Adapter(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+
+        return "result";
+    }
+
+    public class loadXml extends AsyncTask<String, String, String> {
+        public String result = null;
+        public AsyncResponse delegate = null;
+        HttpURLConnection urlConnection;
+        public URL url;
+
+        public loadXml(URL urli) {
+            url = urli;
+        }
+
+        protected String doInBackground(String... args) {
+            StringBuilder result = new StringBuilder();
+
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                urlConnection.disconnect();
+            }
+            return result.toString();
+        }
+        protected void onPostExecute(String result) {
+            //delegate.processFinish(result);
+
+        }
     }
 
     public class Row {
