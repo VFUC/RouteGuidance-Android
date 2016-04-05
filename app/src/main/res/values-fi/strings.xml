@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FöliGuide</string>
+    <string name="next_bus_stop">Seuraava pysäkki</string>
+    <string name="select_bus">Valitse bussi</string>
+    <string name="you_are_on_bus">Olet bussissa</string>
+    <string name="distance_to_bus">Etäisyys bussiin</string>
+    <string name="select_destination">Valitse määränpää</string>
+</resources>

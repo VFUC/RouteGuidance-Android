@@ -67,7 +67,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         Location location = locationManager.getLastKnownLocation(provider);
 
         if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
+            //System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         }
 
@@ -132,14 +132,14 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     }
     @Override
     public void onProviderEnabled(String provider) {
-        Toast.makeText(this, "Enabled new provider " + provider,
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Enabled new provider " + provider,
+        //        Toast.LENGTH_SHORT).show();
 
     }
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(this, "Disabled provider " + provider,
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Disabled provider " + provider,
+        //        Toast.LENGTH_SHORT).show();
     }
     public void processFinish(String output) {
         float Longitude;
