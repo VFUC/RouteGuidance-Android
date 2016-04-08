@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FöliGuide</string>
-    <string name="next_bus_stop">Seuraava pysäkki</string>
-    <string name="select_bus">Valitse bussi</string>
-    <string name="you_are_on_bus">Olet bussissa</string>
-    <string name="distance_to_bus">Etäisyys bussiin</string>
-    <string name="select_destination">Valitse määränpää</string>
+    <string name="next_bus_stop">Nästa stopp</string>
+    <string name="select_bus">Välj bussen</string>
+    <string name="you_are_on_bus">Du är på bussen</string>
+    <string name="distance_to_bus">Avståndet till bussen</string>
+    <string name="select_destination">Välj en destination</string>
 </resources>
