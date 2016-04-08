@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">FöliGuide</string>
-    <string name="next_bus_stop">Next bus stop</string>
-    <string name="select_bus">Select bus</string>
-    <string name="you_are_on_bus">You are on bus</string>
-    <string name="distance_to_bus">Distance to bus</string>
-    <string name="select_destination">Select destination</string>
-</resources>
