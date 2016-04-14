@@ -40,6 +40,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:id="@+id/busdestination"
+            android:layout_below="@+id/busnumber"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="0sp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,9 +58,9 @@
         android:textSize="25sp"
         android:text="@string/next_bus_stop"
         android:id="@+id/textView2"
-        android:layout_below="@+id/busnumber"
+        android:layout_below="@+id/busdestination"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"

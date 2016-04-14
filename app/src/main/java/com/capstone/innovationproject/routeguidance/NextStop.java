@@ -41,6 +41,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
     private TextView stopnameField;
     private TextView busnumberField;
     private TextView alarmField;
+    private TextView busDestinationField;
     //private TextView distanceField;
     //private LocationManager locationManager;
     //private String provider;
@@ -49,6 +50,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
     private String busNumberText = "";
     private String stopNameText = "";
+    private String busDestination;
     private String distanceText = "";
     private String busId = "";
     private String busNumber = "";
@@ -72,6 +74,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         if (bundle != null) {
             busId = bundle.getString("id");
             busNumber = bundle.getString("busnumber");
+            busDestination = bundle.getString("busDestination");
             blockref = bundle.getString("blockref");
             directionref = bundle.getString("directionref");
             if(bundle.getString("stopname")==null) {
@@ -109,6 +112,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
         stopnameField = (TextView) findViewById(R.id.stopname);
         busnumberField = (TextView) findViewById(R.id.busnumber);
+        busDestinationField = (TextView) findViewById(R.id.busdestination);
         //distanceField = (TextView) findViewById(R.id.distance);
 
         updateData();
@@ -182,6 +186,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
             stopnameField.setText(stopNameText);
             busnumberField.setText(busNumberText);
+            busDestinationField.setText(busDestination);
             //distanceField.setText(distanceText);
 
             if(alarmField!=null)
@@ -191,6 +196,13 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                     Log.d(TAG, "Vibration");
                     final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(2000);
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     alarmset=true;
                 }
                 else { //reset alarm

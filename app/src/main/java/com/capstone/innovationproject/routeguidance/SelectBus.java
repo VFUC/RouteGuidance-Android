@@ -84,6 +84,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 Bundle bundle = new Bundle();
                 bundle.putString("id", busId);
                 bundle.putString("busnumber", buses.get(position).getBusNumber());
+                bundle.putString("busDestination", buses.get(position).busDestination);
                 bundle.putString("blockref", buses.get(position).blockref);
                 bundle.putString("directionref", buses.get(position).directionref);
                 i.putExtras(bundle);
