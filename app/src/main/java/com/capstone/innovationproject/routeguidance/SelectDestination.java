@@ -59,7 +59,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         if (bundle != null) {
             busId = bundle.getString("id");
             blockref = bundle.getString("blockref");
-            busNumber = bundle.getString("busNumber");
+            busNumber = bundle.getString("busnumber");
             directionref = bundle.getString("directionref");
         }
         //getRoute();
@@ -79,7 +79,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 Bundle bundle = new Bundle();
                 bundle.putString("stopname", stoppi);
                 bundle.putString("id", busId);
-                bundle.putString("busNumber", busNumber);
+                bundle.putString("busnumber", busNumber);
                 bundle.putString("directionref", directionref);
                 i.putExtras(bundle);
                 startActivity(i);

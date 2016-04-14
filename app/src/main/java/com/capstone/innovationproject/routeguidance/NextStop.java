@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.location.Criteria;
@@ -66,6 +67,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ImageButton imgButton;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next_stop);
 
@@ -90,6 +92,21 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 alarmField.setText(alarmStop);
             }
         }
+
+        imgButton =(ImageButton)findViewById(R.id.select_destination_image);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(NextStop.this, SelectDestination.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", busId);
+                bundle.putString("busnumber", busNumber);
+                bundle.putString("blockref", blockref);
+                bundle.putString("directionref", directionref);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -129,7 +146,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 i = new Intent(NextStop.this, SelectDestination.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("id", busId);
-                bundle.putString("busNumber", busNumber);
+                bundle.putString("busnumber", busNumber);
                 bundle.putString("blockref", blockref);
                 bundle.putString("directionref", directionref);
                 i.putExtras(bundle);
