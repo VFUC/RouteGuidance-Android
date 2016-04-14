@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.net.URL;
 import java.util.Iterator;
@@ -35,13 +37,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NextStop extends AppCompatActivity implements AsyncResponse {
+    private static final String TAG = SelectDestination.class.getSimpleName();
     private TextView stopnameField;
     private TextView busnumberField;
-    private TextView distanceField;
-    private LocationManager locationManager;
-    private String provider;
-    private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
-    private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
+    private TextView alarmField;
+    //private TextView distanceField;
+    //private LocationManager locationManager;
+    //private String provider;
+    //private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+    //private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
 
     private String busNumberText = "";
     private String stopNameText = "";
@@ -49,6 +53,9 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
     private String busId = "";
     private String busNumber = "";
     private String blockref = "";
+    private String directionref = "";
+    private String alarmStop = "";
+    private boolean alarmset=false;
 
     TextToSpeech t1;
 
@@ -66,6 +73,16 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             busId = bundle.getString("id");
             busNumber = bundle.getString("busnumber");
             blockref = bundle.getString("blockref");
+            directionref = bundle.getString("directionref");
+            if(bundle.getString("stopname")==null) {
+                findViewById(R.id.textView4).setVisibility(View.GONE);
+                findViewById(R.id.alarm_for).setVisibility(View.GONE);
+            }
+            else {
+                alarmStop = bundle.getString("stopname");
+                alarmField = (TextView) findViewById(R.id.alarm_for);
+                alarmField.setText(alarmStop);
+            }
         }
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -79,7 +96,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
         // vibration
         final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
-        vibe.vibrate(100);
+        //vibe.vibrate(100);
 
         // play notification sound
         try {
@@ -92,7 +109,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
         stopnameField = (TextView) findViewById(R.id.stopname);
         busnumberField = (TextView) findViewById(R.id.busnumber);
-        distanceField = (TextView) findViewById(R.id.distance);
+        //distanceField = (TextView) findViewById(R.id.distance);
 
         updateData();
     }
@@ -107,11 +124,11 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 bundle.putString("id", busId);
                 bundle.putString("busNumber", busNumber);
                 bundle.putString("blockref", blockref);
+                bundle.putString("directionref", directionref);
                 i.putExtras(bundle);
                 startActivity(i);
                 break;
             default:
-                return;
         }
     }
 
@@ -124,6 +141,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         float Longitude;
         float Latitude;
         String stopName;
+        String stopAfter;
         String key = "";
         String busNumber;
         try {
@@ -146,18 +164,65 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             Longitude = Float.parseFloat(jsonNode.optString("longitude"));
             Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
+            JSONArray json = jsonNode.getJSONArray("onwardcalls");
+            for(int i=0; i<json.length(); i++) {
+                JSONObject e = json.getJSONObject(i);
+                stopAfter = e.getString("stoppointname");
+                TextView stopafterField = (TextView) findViewById(R.id.stopafter);
+                stopafterField.setText(stopAfter);
+            }
+
+
             busLocation.setLatitude(Latitude);
             busLocation.setLongitude(Longitude);
 
             busNumberText = busNumber;
             stopNameText = stopName;
-            distanceText = String.format("");
+            //distanceText = String.format("");
 
             stopnameField.setText(stopNameText);
             busnumberField.setText(busNumberText);
-            distanceField.setText(distanceText);
+            //distanceField.setText(distanceText);
+
+            if(alarmField!=null)
+            if(stopName.equals(alarmStop)) {
+                Log.d(TAG, "stopname = alarmstop, alarm if alarmset=false");
+                if(alarmset==false) {
+                    Log.d(TAG, "Vibration");
+                    final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(2000);
+                    alarmset=true;
+                }
+                else { //reset alarm
+                    alarmset=false;
+                    alarmStop = "";
+                    findViewById(R.id.textView4).setVisibility(View.GONE);
+                    findViewById(R.id.alarm_for).setVisibility(View.GONE);
+                }
+            }
+            else alarmset=false;
 
         } catch (JSONException e) {e.printStackTrace();}
+    }
+
+    public void alarmCheck() {
+        if(alarmField!=null)
+            if(findViewById(R.id.stopname).equals(alarmStop)) {
+                Log.d(TAG, "stopname = alarmstop, alarm if alarmset=false");
+                if(alarmset==false) {
+                    Log.d(TAG, "Vibration");
+                    final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(2000);
+                    alarmset=true;
+                }
+                else { //reset alarm
+                    alarmset=false;
+                    alarmStop = "";
+                    findViewById(R.id.textView4).setVisibility(View.GONE);
+                    findViewById(R.id.alarm_for).setVisibility(View.GONE);
+                }
+            }
+            else alarmset=false;
     }
 
     public void updateData() {

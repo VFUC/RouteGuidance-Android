@@ -25,64 +25,87 @@
         android:text="@string/you_are_on_bus"
         android:layout_marginTop="45dp"
         android:id="@+id/textView1"
-        android:textSize="40dp"
+        android:textSize="25sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:textSize="60sp"
         android:textColor="#FFFFFF"
+        android:textStyle="bold"
         android:id="@+id/busnumber"
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="0sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:textSize="40dp"
+        android:textSize="25sp"
         android:text="@string/next_bus_stop"
         android:id="@+id/textView2"
         android:layout_below="@+id/busnumber"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="0dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:textSize="30sp"
         android:id="@+id/stopname"
+        android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="0sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:textSize="40dp"
-        android:text="@string/distance_to_bus"
-        android:visibility="invisible"
+        android:textSize="25sp"
+        android:text="@string/stop_after_that"
         android:id="@+id/textView3"
         android:layout_below="@+id/stopname"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:text=""
+        android:textSize="30sp"
         android:textColor="#FFFFFF"
-        android:id="@+id/distance"
-        android:visibility="invisible"
+        android:id="@+id/stopafter"
+        android:textStyle="bold"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="0sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:text="@string/alarm_set_for"
+            android:id="@+id/textView4"
+            android:layout_below="@+id/stopafter"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textColor="#FFFFFF"
+            android:id="@+id/alarm_for"
+            android:text="Alarm"
+            android:textStyle="bold"
+            android:layout_below="@+id/textView4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="0sp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -93,6 +116,5 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:onClick="onClick" />
-
     </RelativeLayout>
 </ScrollView>

@@ -7,15 +7,17 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -34,19 +36,19 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SelectDestination extends AppCompatActivity implements AsyncResponse {
     private static final String TAG = SelectDestination.class.getSimpleName();
     ArrayList<Row> stops = new ArrayList<>();
-    ArrayList<String> stopsS = new ArrayList<>();
+    ArrayList<String> stops_string = new ArrayList<>();
 
-    ArrayList<String> listItems=new ArrayList<String>();
+   ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
     private String stoppi;
-    private String busId = "", blockref="", busNumber="";
+    private String busId = "", blockref="", busNumber="", directionref="";
     public int stopcount = 0;
+    ListView lv;
+    SearchView sv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             busId = bundle.getString("id");
             blockref = bundle.getString("blockref");
             busNumber = bundle.getString("busNumber");
+            directionref = bundle.getString("directionref");
         }
         //getRoute();
 
@@ -65,24 +68,24 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        ListView lv = (ListView)findViewById(R.id.listView);
+        lv = (ListView)findViewById(R.id.listView);
+        sv = (SearchView)findViewById(R.id.searchView);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //Toast.makeText(SelectBus.this, "" + position,
-                //        Toast.LENGTH_SHORT).show();
-                stoppi = stops.get(position).toString();
+                stoppi = stops_string.get(position).toString();
                 Intent i = new Intent(SelectDestination.this, NextStop.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("stopname", stoppi);
                 bundle.putString("id", busId);
                 bundle.putString("busNumber", busNumber);
+                bundle.putString("directionref", directionref);
                 i.putExtras(bundle);
                 startActivity(i);
             }
         });
-        //getRoute();
+
         adapter=new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
@@ -90,16 +93,31 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         getRoute();
     }
 
+    public void initList(){
+        adapter=new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                stops_string);
+        lv.setAdapter(adapter);
+    }
+
+    public void searchItem(String textToSearch){
+        for(String item:stops_string){
+            if(!item.contains(textToSearch)){
+                stops_string.remove(item);
+
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     public void processFinish(String output) {
         String key;
         String busStop;
         ListView listview = (ListView) findViewById(R.id.listView);
 
-        int i=0;
-
         try {
             stops.clear();
-            stopsS.clear();
+            stops_string.clear();
             JSONObject jsonRootObject = new JSONObject(output);
 
             Iterator<String> iter = jsonRootObject.keys();
@@ -108,7 +126,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 JSONObject jsonBusStop = jsonRootObject.optJSONObject(key);
                 busStop = jsonBusStop.optString("stop_name");
                 stops.add   (new Row(key, busStop));
-                stopsS.add(busStop);
+                stops_string.add(busStop);
             }
         } catch (JSONException e) {
             e.printStackTrace();}
@@ -124,20 +142,20 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         });
 
         Set<String> hs = new HashSet<>();
-        hs.addAll(stopsS);
-        stopsS.clear();
-        stopsS.addAll(hs);
-        Collections.sort(stopsS);
-        stopcount = stopsS.size();
+        hs.addAll(stops_string);
+        stops_string.clear();
+        stops_string.addAll(hs);
+        Collections.sort(stops_string);
+        stopcount = stops_string.size();
         listview.setAdapter(new Adapter(this));
     }
 
-    public String getRoute() {
+    public void getRoute() {
         URL url;
         ListView listview = (ListView) findViewById(R.id.listView);
-        String latest, route_id="", trip_id="", stopsxml="";
+        String latest, route_id="", trip_id="", stopsxml;
         StringBuilder sb = new StringBuilder();
-        String result = new String();
+        String result;
 
         try {
             //latest version
@@ -146,7 +164,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             result = new loadXml(url).execute().get();
             Log.d(TAG, "XML downloaded");
             Log.d(TAG, result);
-            JSONObject jsonRootObject = new JSONObject(result.toString());
+            JSONObject jsonRootObject = new JSONObject(result);
             latest = jsonRootObject.getString("latest");
             Log.d(TAG, "latest = " + latest);
 
@@ -160,8 +178,9 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
 
             Log.d(TAG, "Id = " + busId);
             Log.d(TAG, "busNumber = " + busNumber);
+            Log.d(TAG, "directionref = " + directionref);
 
-            JSONArray jsonArray = new JSONArray(result.toString());
+            JSONArray jsonArray = new JSONArray(result);
             for(int i=0; i<jsonArray.length(); i++) {
                 JSONObject e = jsonArray.getJSONObject(i);
                 if(e.getString("route_short_name").equals(busNumber)) route_id=e.getString("route_id");
@@ -178,7 +197,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
 
             //search blockid and save tripid
             Log.d(TAG, "block_id = " + blockref);
-            jsonArray = new JSONArray(result.toString());
+            jsonArray = new JSONArray(result);
             for(int i=0; i<jsonArray.length(); i++) {
                 JSONObject e = jsonArray.getJSONObject(i);
                 if(e.getString("block_id").equals(blockref)) trip_id=e.getString("trip_id");
@@ -198,7 +217,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             stopsxml = new loadXml(url).execute().get();
             Log.d(TAG, "XML downloaded");
             Log.d(TAG, stopsxml);
-            jsonArray = new JSONArray(result.toString());
+            jsonArray = new JSONArray(result);
 
             JSONObject jsonObject = new JSONObject(stopsxml);
 
@@ -208,32 +227,25 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 while (iter.hasNext()) {
                     String key = iter.next();
                     JSONObject jsonNode = jsonObject.getJSONObject(key);
-                    if(key.toString().equals(e.getString("stop_id"))) stopsS.add(jsonNode.optString("stop_name"));
+                    if(key.equals(e.getString("stop_id"))) stops_string.add(jsonNode.optString("stop_name"));
                 }
-
-                Set<String> hs = new HashSet<>();
-                hs.addAll(stopsS);
-                stopsS.clear();
-                stopsS.addAll(hs);
-
-                //stops.add(new Row(e.getString("stop_id"), e.getString("stop_id")));
-                //stopsS.add(e.getString("stop_id"));
-                Log.d(TAG, e.getString("stop_id"));
             }
-            stopcount = stopsS.size();
+
+            if(directionref.equals("1")) {
+                Log.d(TAG, "Reversing stops");
+                Collections.reverse(stops_string);
+            }
+
+            stopcount = stops_string.size();
             listview.setAdapter(new Adapter(this));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
 
         }
-
-        return "result";
     }
 
     public class loadXml extends AsyncTask<String, String, String> {
-        public String result = null;
-        public AsyncResponse delegate = null;
         HttpURLConnection urlConnection;
         public URL url;
 
@@ -262,7 +274,6 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         }
         protected void onPostExecute(String result) {
             //delegate.processFinish(result);
-
         }
     }
 
@@ -283,16 +294,6 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         public String getStopName() { return stopName; }
     }
 
-    public void updateData() {
-                try {
-                    GetData data = new GetData(new URL("http://data.foli.fi/siri/sm"));
-                    data.delegate = SelectDestination.this;
-                    data.execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-    }
-
     class Adapter extends BaseAdapter {
         private Context context;
 
@@ -301,7 +302,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         }
 
         public int getCount() {
-            return stopcount-1;
+            return stopcount;
         }
 
         public Object getItem(int position) {
@@ -321,12 +322,10 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             else {
                 tv = (TextView) convertView;
             }
-            if(!stopsS.isEmpty()) {
-                tv.setText(stopsS.get(position));
+            if(!stops_string.isEmpty()) {
+                tv.setText(stops_string.get(position));
                 tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
-                //tv.setBackgroundColor(Color.rgb(234, 160, 0));
-                //tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
             return tv;
         }

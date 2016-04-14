@@ -3,7 +3,8 @@
     <string name="app_name">FöliGuide</string>
     <string name="next_bus_stop">Nästa stopp</string>
     <string name="select_bus">Välj bussen</string>
-    <string name="you_are_on_bus">Du är på bussen</string>
-    <string name="distance_to_bus">Avståndet till bussen</string>
+    <string name="you_are_on_bus">Bussen</string>
+    <string name="stop_after_that">Stop after that:</string>
+    <string name="alarm_set_for">Alarm set for:</string>
     <string name="select_destination">Välj en destination</string>
 </resources>

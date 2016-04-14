@@ -1,8 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FöliGuide</string>
-    <string name="next_bus_stop">Next bus stop</string>
+    <string name="next_bus_stop">Next bus station:</string>
     <string name="select_bus">Select bus</string>
-    <string name="you_are_on_bus">You are on bus</string>
-    <string name="distance_to_bus">Distance to bus</string>
+    <string name="you_are_on_bus">Bus</string>
+    <string name="stop_after_that">Stop after that:</string>
+    <string name="alarm_set_for">Alarm set for:</string>
     <string name="select_destination">Select destination</string>
 </resources>

@@ -85,6 +85,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 bundle.putString("id", busId);
                 bundle.putString("busnumber", buses.get(position).getBusNumber());
                 bundle.putString("blockref", buses.get(position).blockref);
+                bundle.putString("directionref", buses.get(position).directionref);
                 i.putExtras(bundle);
                 startActivity(i);
             }
@@ -148,6 +149,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         String key;
         String busNumber;
         String block;
+        String directionref;
         GridView gridview = (GridView) findViewById(R.id.gridview);
 
 
@@ -170,6 +172,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 busNumber = jsonNode.optString("publishedlinename");
                 busDestination = jsonNode.optString("destinationname");
                 block = jsonNode.optString("blockref");
+                directionref = jsonNode.optString("directionref");
                 Longitude = Float.parseFloat(jsonNode.optString("longitude"));
                 Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
@@ -178,10 +181,11 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
                 if(sijainti != null) { //if we have user location
                     distance = Math.round(sijainti.distanceTo(busLocation));
-                    buses.add(new Row(distance, key, busNumber, busDestination, block));
+                    buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
                 } else {
-                    buses.add(new Row(distance, key, busNumber, busDestination, block));
+                    buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
                 }
+
             }
         } catch (JSONException e) {e.printStackTrace();}
         Collections.sort(buses);
@@ -193,14 +197,16 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         public String busNumber;
         public String busDestination;
         public String blockref;
+        public String directionref;
         public int distance;
 
-        public Row(int distance, String id, String busNumber, String busDestination, String blockref) {
+        public Row(int distance, String id, String busNumber, String busDestination, String blockref, String directionref) {
             this.distance = distance;
             this.busId = id;
             this.busNumber = busNumber;
             this.busDestination = busDestination;
             this.blockref = blockref;
+            this.directionref = directionref;
         }
 
         public int getDistance() {
@@ -267,11 +273,11 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty()) {
-                if(buses.size()>position) tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n(" + buses.get(position).getDistance() + " m)");
+                if(buses.size()>position) tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination());
                 tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
                 tv.setBackgroundColor(Color.rgb(234, 160, 0));
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                //tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
             return tv;
         }
