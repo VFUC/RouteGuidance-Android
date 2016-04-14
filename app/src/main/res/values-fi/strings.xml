@@ -7,4 +7,5 @@
     <string name="stop_after_that">Stop after that:</string>
     <string name="alarm_set_for">Alarm set for:</string>
     <string name="select_destination">Valitse määränpää</string>
+    <string name="select_your_bus">Select your bus</string>
 </resources>

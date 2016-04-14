@@ -21,17 +21,32 @@
         android:id="@+id/textView"
         android:textColor="#ffffff"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="0sp"/>
 
-    <Button
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next_bus_stop"
-        android:id="@+id/button1Main"
-        android:onClick="onClick"
-        android:visibility="invisible"
+        android:id="@+id/imageButton"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bus"
+        android:background="@null"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:text="@string/select_your_bus"
+        android:id="@+id/textView2"
+        android:onClick="onClick"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/imageButton" />
 
     <Button
         android:layout_width="wrap_content"
@@ -39,6 +54,7 @@
         android:text="@string/select_bus"
         android:id="@+id/button"
         android:onClick="onClick"
-        android:layout_above="@+id/button1Main"
+        android:visibility="invisible"
+        android:layout_above="@+id/imageButton"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

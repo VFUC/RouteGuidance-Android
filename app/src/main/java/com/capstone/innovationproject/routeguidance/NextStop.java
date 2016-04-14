@@ -3,6 +3,8 @@ package com.capstone.innovationproject.routeguidance;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationListener;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -68,6 +70,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_next_stop);
 
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(0xffeaab00));
         actionBar.hide();
 
         Bundle bundle = getIntent().getExtras();

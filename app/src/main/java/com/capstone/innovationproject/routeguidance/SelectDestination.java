@@ -227,7 +227,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 while (iter.hasNext()) {
                     String key = iter.next();
                     JSONObject jsonNode = jsonObject.getJSONObject(key);
-                    if(key.equals(e.getString("stop_id"))) stops_string.add(jsonNode.optString("stop_name"));
+                    if(key.equals(e.getString("stop_id")) && !stops_string.contains(jsonNode.optString("stop_name"))) stops_string.add(jsonNode.optString("stop_name"));
                 }
             }
 

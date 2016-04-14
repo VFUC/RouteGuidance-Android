@@ -14,6 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,6 +37,7 @@ import java.util.TimerTask;
 import java.util.ArrayList;
 
 public class SelectBus extends AppCompatActivity implements LocationListener, AsyncResponse{
+    private static final String TAG = SelectDestination.class.getSimpleName();
     private LocationManager locationManager;
     private String provider;
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
@@ -41,6 +45,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     private Location sijainti;
     private String busId = "";
     ArrayList<Row> buses = new ArrayList<Row>();
+    int buscount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,28 +174,32 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 key = iter.next();
                 JSONObject jsonNode = jsonVehicles.getJSONObject(key);
 
-                //Get bus data
-                busNumber = jsonNode.optString("publishedlinename");
-                busDestination = jsonNode.optString("destinationname");
-                block = jsonNode.optString("blockref");
-                directionref = jsonNode.optString("directionref");
-                Longitude = Float.parseFloat(jsonNode.optString("longitude"));
-                Latitude = Float.parseFloat(jsonNode.optString("latitude"));
+                if(jsonNode.optString("monitoringerror").equals("LOCATION_UNDEFINED")) { }
+                else {
+                    //Get bus data
+                    busNumber = jsonNode.optString("publishedlinename");
+                    busDestination = jsonNode.optString("destinationname");
+                    block = jsonNode.optString("blockref");
+                    directionref = jsonNode.optString("directionref");
+                    Longitude = Float.parseFloat(jsonNode.optString("longitude"));
+                    Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
-                busLocation.setLatitude(Latitude);
-                busLocation.setLongitude(Longitude);
+                    busLocation.setLatitude(Latitude);
+                    busLocation.setLongitude(Longitude);
 
-                if(sijainti != null) { //if we have user location
-                    distance = Math.round(sijainti.distanceTo(busLocation));
-                    buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
-                } else {
-                    buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
+                    if (sijainti != null) { //if we have user location
+                        distance = Math.round(sijainti.distanceTo(busLocation));
+                        buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
+                    } else {
+                        buses.add(new Row(distance, key, busNumber, busDestination, block, directionref));
+                    }
                 }
 
             }
         } catch (JSONException e) {e.printStackTrace();}
         Collections.sort(buses);
         gridview.setAdapter(new Adapter(this));             //Updates the gridview
+        buscount = buses.size();
     }
 
     public class Row implements Comparable<Row>{
@@ -253,7 +262,8 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public int getCount() {
-            return 12;
+            Log.d(TAG, "buscount = " + buscount);
+            return buscount;
         }
 
         public Object getItem(int position) {
@@ -268,17 +278,20 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             TextView tv;
             if (convertView == null) {
                 tv = new TextView(context);
-                tv.setLayoutParams(new GridView.LayoutParams(400, 400));
+                tv.setLayoutParams(new GridView.LayoutParams(500, 400));
             }
             else {
                 tv = (TextView) convertView;
             }
-            if(!buses.isEmpty()) {
-                if(buses.size()>position) tv.setText("" + buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination());
+            if(!buses.isEmpty() && buses.size()>position) {
+                String s = buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n" + buses.get(position).getDistance() + " m away";
+                SpannableString ss = new SpannableString(s);
+                ss.setSpan(new RelativeSizeSpan(3f), 0, buses.get(position).getBusNumber().length(), 0);
+                if(buses.size()>position) tv.setText(ss);
                 tv.setTextSize(20);
                 tv.setTextColor(Color.rgb(255, 255, 255));
                 tv.setBackgroundColor(Color.rgb(234, 160, 0));
-                //tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
             return tv;
         }
