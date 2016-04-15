@@ -233,7 +233,11 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
 
             if(directionref.equals("1")) {
                 Log.d(TAG, "Reversing stops");
-                Collections.reverse(stops_string);
+                ArrayList<String> temp = new ArrayList<>();
+                temp.addAll(stops_string);
+                stops_string.clear();
+                for(int i=stops_string.size(); i>0; i--) stops_string.add(temp.get(i));
+                //Collections.reverse(stops_string);
             }
 
             stopcount = stops_string.size();

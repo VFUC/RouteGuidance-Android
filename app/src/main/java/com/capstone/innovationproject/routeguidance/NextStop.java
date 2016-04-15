@@ -87,9 +87,11 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 findViewById(R.id.alarm_for).setVisibility(View.GONE);
             }
             else {
-                alarmStop = bundle.getString("stopname");
-                alarmField = (TextView) findViewById(R.id.alarm_for);
-                alarmField.setText(alarmStop);
+                if(!alarmStop.isEmpty()) {
+                    alarmStop = bundle.getString("stopname");
+                    alarmField = (TextView) findViewById(R.id.alarm_for);
+                    alarmField.setText(alarmStop);
+                }
             }
         }
 
@@ -122,13 +124,13 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         //vibe.vibrate(100);
 
         // play notification sound
-        try {
+        /*try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         stopnameField = (TextView) findViewById(R.id.stopname);
         busnumberField = (TextView) findViewById(R.id.busnumber);
@@ -188,7 +190,8 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             Longitude = Float.parseFloat(jsonNode.optString("longitude"));
             Latitude = Float.parseFloat(jsonNode.optString("latitude"));
 
-            JSONArray json = jsonNode.getJSONArray("onwardcalls");
+            JSONArray json = new JSONArray();
+            if(jsonNode.has("onwardcalls")) json = jsonNode.getJSONArray("onwardcalls");
             for(int i=0; i<json.length(); i++) {
                 JSONObject e = json.getJSONObject(i);
                 stopAfter = e.getString("stoppointname");
@@ -209,30 +212,30 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             busDestinationField.setText(busDestination);
             //distanceField.setText(distanceText);
 
-            if(alarmField!=null)
-            if(stopName.equals(alarmStop)) {
-                Log.d(TAG, "stopname = alarmstop, alarm if alarmset=false");
-                if(alarmset==false) {
-                    Log.d(TAG, "Vibration");
-                    final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(2000);
-                    try {
-                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                        r.play();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if("".equals(alarmField)) {}
+            else {
+                if (stopName.equals(alarmStop)) {
+                    Log.d(TAG, "stopname = alarmstop, alarm if alarmset=false");
+                    if (alarmset == false) {
+                        Log.d(TAG, "Vibration");
+                        final Vibrator vibe = (Vibrator) NextStop.this.getSystemService(Context.VIBRATOR_SERVICE);
+                        vibe.vibrate(2000);
+                        try {
+                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                            r.play();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        alarmset = true;
+                    } else { //reset alarm
+                        alarmset = false;
+                        alarmStop = "";
+                        findViewById(R.id.textView4).setVisibility(View.GONE);
+                        findViewById(R.id.alarm_for).setVisibility(View.GONE);
                     }
-                    alarmset=true;
-                }
-                else { //reset alarm
-                    alarmset=false;
-                    alarmStop = "";
-                    findViewById(R.id.textView4).setVisibility(View.GONE);
-                    findViewById(R.id.alarm_for).setVisibility(View.GONE);
-                }
+                } else alarmset = false;
             }
-            else alarmset=false;
 
         } catch (JSONException e) {e.printStackTrace();}
     }

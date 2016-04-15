@@ -67,14 +67,16 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                     MY_PERMISSION_ACCESS_COARSE_LOCATION);
         }
 
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
+        try {
+            Criteria criteria = new Criteria();
+            provider = locationManager.getBestProvider(criteria, false);
+            Location location = locationManager.getLastKnownLocation(provider);
 
-        if (location != null) {
-            //System.out.println("Provider " + provider + " has been selected.");
-            onLocationChanged(location);
-        }
+            if (location != null) {
+                //System.out.println("Provider " + provider + " has been selected.");
+                onLocationChanged(location);
+            }
+        } catch(Exception e) {e.printStackTrace(); }
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(new Adapter(this));
@@ -262,7 +264,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public int getCount() {
-            Log.d(TAG, "buscount = " + buscount);
+            //Log.d(TAG, "buscount = " + buscount);
             return buscount;
         }
 
