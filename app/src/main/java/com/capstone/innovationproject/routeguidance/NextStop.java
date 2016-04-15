@@ -75,6 +75,9 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         actionBar.setBackgroundDrawable(new ColorDrawable(0xffeaab00));
         actionBar.hide();
 
+        alarmset=false;
+        alarmStop = "";
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             busId = bundle.getString("id");
@@ -87,11 +90,11 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 findViewById(R.id.alarm_for).setVisibility(View.GONE);
             }
             else {
-                if(!alarmStop.isEmpty()) {
+
                     alarmStop = bundle.getString("stopname");
                     alarmField = (TextView) findViewById(R.id.alarm_for);
                     alarmField.setText(alarmStop);
-                }
+            
             }
         }
 
@@ -212,8 +215,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             busDestinationField.setText(busDestination);
             //distanceField.setText(distanceText);
 
-            if("".equals(alarmField)) {}
-            else {
+            if(!alarmStop.isEmpty()) {
                 if (stopName.equals(alarmStop)) {
                     Log.d(TAG, "stopname = alarmstop, alarm if alarmset=false");
                     if (alarmset == false) {
@@ -235,8 +237,8 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                         findViewById(R.id.alarm_for).setVisibility(View.GONE);
                     }
                 } else alarmset = false;
-            }
 
+            }
         } catch (JSONException e) {e.printStackTrace();}
     }
 

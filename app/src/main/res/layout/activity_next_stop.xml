@@ -112,7 +112,7 @@
             android:textSize="30sp"
             android:textColor="#FFFFFF"
             android:id="@+id/alarm_for"
-            android:text="Alarm"
+            android:text=""
             android:textStyle="bold"
             android:layout_below="@+id/textView4"
             android:layout_centerHorizontal="true"

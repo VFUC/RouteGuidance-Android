@@ -4,8 +4,8 @@
     <string name="next_bus_stop">Seuraava pysäkki:</string>
     <string name="select_bus">Valitse bussi</string>
     <string name="you_are_on_bus">Bussi</string>
-    <string name="stop_after_that">Stop after that:</string>
-    <string name="alarm_set_for">Alarm set for:</string>
+    <string name="stop_after_that">Sen jälkeen:</string>
+    <string name="alarm_set_for">Hälytys asetettu:</string>
     <string name="select_destination">Valitse määränpää</string>
-    <string name="select_your_bus">Select your bus</string>
+    <string name="select_your_bus">Valitse bussi</string>
 </resources>
