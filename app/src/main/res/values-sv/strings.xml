@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FöliGuide</string>
-    <string name="next_bus_stop">Nästa stopp</string>
-    <string name="select_bus">Välj bussen</string>
-    <string name="you_are_on_bus">Bussen</string>
-    <string name="stop_after_that">Stop after that:</string>
-    <string name="alarm_set_for">Alarm set for:</string>
-    <string name="select_destination">Välj en destination</string>
-    <string name="select_your_bus">Select your bus</string>
+    <string name="next_bus_stop">Nästa stopp:</string>
+    <string name="select_bus">Välj buss</string>
+    <string name="you_are_on_bus">Buss</string>
+    <string name="stop_after_that">Efter det:</string>
+    <string name="alarm_set_for">Alarm på för:</string>
+    <string name="select_your_bus">Välj buss</string>
+    <string name="away">away</string>
+    <string name="search">Leta efter busshållplats</string>
 </resources>

@@ -16,14 +16,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import org.json.JSONException;
@@ -73,7 +71,6 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
             Location location = locationManager.getLastKnownLocation(provider);
 
             if (location != null) {
-                //System.out.println("Provider " + provider + " has been selected.");
                 onLocationChanged(location);
             }
         } catch(Exception e) {e.printStackTrace(); }
@@ -84,8 +81,6 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                //Toast.makeText(SelectBus.this, "" + position,
-                //        Toast.LENGTH_SHORT).show();
                 busId = buses.get(position).getBusId();
                 Intent i = new Intent(SelectBus.this, NextStop.class);
                 Bundle bundle = new Bundle();
@@ -143,7 +138,6 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
     public void onProviderEnabled(String provider) {
         //Toast.makeText(this, "Enabled new provider " + provider,
         //        Toast.LENGTH_SHORT).show();
-
     }
     @Override
     public void onProviderDisabled(String provider) {
@@ -199,6 +193,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
             }
         } catch (JSONException e) {e.printStackTrace();}
+
         Collections.sort(buses);
         gridview.setAdapter(new Adapter(this));             //Updates the gridview
         buscount = buses.size();
@@ -237,7 +232,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
 
         @Override
         public int compareTo(Row compareBuses) {
-            int compareDistance=((Row)compareBuses).getDistance();
+            int compareDistance=compareBuses.getDistance();
             return this.distance-compareDistance;
         }
     }
@@ -264,8 +259,7 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
         }
 
         public int getCount() {
-            //Log.d(TAG, "buscount = " + buscount);
-            return buscount;
+             return buscount;
         }
 
         public Object getItem(int position) {
@@ -286,7 +280,9 @@ public class SelectBus extends AppCompatActivity implements LocationListener, As
                 tv = (TextView) convertView;
             }
             if(!buses.isEmpty() && buses.size()>position) {
-                String s = buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n" + buses.get(position).getDistance() + " m away";
+                String s;
+                if(buses.get(position).getDistance()>0) s = buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n" + buses.get(position).getDistance() + " m " + R.string.away;
+                else s = buses.get(position).getBusNumber() + "\n" + buses.get(position).getBusDestination() + "\n";
                 SpannableString ss = new SpannableString(s);
                 ss.setSpan(new RelativeSizeSpan(3f), 0, buses.get(position).getBusNumber().length(), 0);
                 if(buses.size()>position) tv.setText(ss);

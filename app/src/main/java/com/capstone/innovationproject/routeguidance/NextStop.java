@@ -1,40 +1,28 @@
 package com.capstone.innovationproject.routeguidance;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.LocationListener;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -94,7 +82,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                     alarmStop = bundle.getString("stopname");
                     alarmField = (TextView) findViewById(R.id.alarm_for);
                     alarmField.setText(alarmStop);
-            
+
             }
         }
 
@@ -108,8 +96,10 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 bundle.putString("busnumber", busNumber);
                 bundle.putString("blockref", blockref);
                 bundle.putString("directionref", directionref);
+                bundle.putString("busdestination", busDestination);
                 i.putExtras(bundle);
-                startActivity(i);
+                startActivityForResult(i, 1);
+                //startActivity(i);
             }
         });
 
@@ -143,7 +133,42 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
         updateData();
     }
 
-    public void onClick(View v){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                busId = data.getStringExtra("id");
+                busNumber = data.getStringExtra("busnumber");
+                busDestination = data.getStringExtra("busdestination");
+                blockref = data.getStringExtra("blockref");
+                directionref = data.getStringExtra("directionref");
+                if(data.getStringExtra("stopname")==null) {
+                    findViewById(R.id.textView4).setVisibility(View.GONE);
+                    findViewById(R.id.alarm_for).setVisibility(View.GONE);
+                }
+                else {
+                    alarmStop = data.getStringExtra("stopname");
+                    alarmField = (TextView) findViewById(R.id.alarm_for);
+                    alarmField.setText(alarmStop);
+                    findViewById(R.id.textView4).setVisibility(View.VISIBLE);
+                    findViewById(R.id.alarm_for).setVisibility(View.VISIBLE);
+
+                }
+
+                /*
+                bundle.putString("stopname", stoppi);
+                bundle.putString("id", busId);
+                bundle.putString("busnumber", busNumber);
+                bundle.putString("directionref", directionref);*/
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+
+            }
+        }
+    }
+
+/*    public void onClick(View v){
         Intent i;
         //t1.speak("TTS testi", TextToSpeech.QUEUE_FLUSH, null, null);
         switch (v.getId()){
@@ -159,7 +184,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
                 break;
             default:
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {
@@ -178,7 +203,7 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
             JSONObject jsonArray = jsonRootObject.optJSONObject("result");
             JSONObject jsonVehicles = jsonArray.optJSONObject("vehicles");
             Location busLocation = new Location("busLocation");
-            double distance = 10000, distancetemp;
+            //double distance = 10000, distancetemp;
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
                 key = bundle.getString("id");
@@ -205,6 +230,10 @@ public class NextStop extends AppCompatActivity implements AsyncResponse {
 
             busLocation.setLatitude(Latitude);
             busLocation.setLongitude(Longitude);
+
+            if(busNumber.equals("")) { //if there is no busnumber, go back to selection screen
+                finish();
+            }
 
             busNumberText = busNumber;
             stopNameText = stopName;

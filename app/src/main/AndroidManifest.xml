@@ -16,13 +16,12 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NextStop" />
-        <activity android:name=".SelectBus" />
-        <activity android:name=".SelectDestination"></activity>
+        <activity android:name=".NextStop" android:screenOrientation="portrait"/>
+        <activity android:name=".SelectBus" android:screenOrientation="portrait"/>
+        <activity android:name=".SelectDestination" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"></activity>
     </application>
 
 </manifest>

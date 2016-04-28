@@ -6,6 +6,7 @@
     <string name="you_are_on_bus">Bussi</string>
     <string name="stop_after_that">Sen jälkeen:</string>
     <string name="alarm_set_for">Hälytys asetettu:</string>
-    <string name="select_destination">Valitse määränpää</string>
     <string name="select_your_bus">Valitse bussi</string>
+    <string name="away">päässä</string>
+    <string name="search">Etsi pysäkkiä</string>
 </resources>

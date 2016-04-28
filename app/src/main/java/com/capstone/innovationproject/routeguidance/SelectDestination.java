@@ -1,5 +1,6 @@
 package com.capstone.innovationproject.routeguidance;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,10 +46,11 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
    ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
     private String stoppi;
-    private String busId = "", blockref="", busNumber="", directionref="";
+    private String busId = "", blockref="", busNumber="", directionref="", busDestination="";
     public int stopcount = 0;
     ListView lv;
     SearchView sv;
+    EditText inputSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +63,17 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             blockref = bundle.getString("blockref");
             busNumber = bundle.getString("busnumber");
             directionref = bundle.getString("directionref");
+            busDestination = bundle.getString("busdestination");
         }
-        //getRoute();
 
-        //updateData();
+
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
         lv = (ListView)findViewById(R.id.listView);
         sv = (SearchView)findViewById(R.id.searchView);
+        inputSearch = (EditText) findViewById(R.id.inputSearch);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -81,21 +85,47 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
                 bundle.putString("id", busId);
                 bundle.putString("busnumber", busNumber);
                 bundle.putString("directionref", directionref);
+                bundle.putString("busdestination", busDestination);
                 i.putExtras(bundle);
-                startActivity(i);
+                setResult(Activity.RESULT_OK,i);
+                finish();
+                //startActivity(i);
             }
         });
 
         adapter=new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                listItems);
+                R.layout.list_white_text,
+                stops_string );
         lv.setAdapter(adapter);
         getRoute();
+
+        inputSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                SelectDestination.this.adapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
     }
+
+
 
     public void initList(){
         adapter=new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
+                R.layout.list_white_text,
                 stops_string);
         lv.setAdapter(adapter);
     }
@@ -147,7 +177,11 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         stops_string.addAll(hs);
         Collections.sort(stops_string);
         stopcount = stops_string.size();
-        listview.setAdapter(new Adapter(this));
+        adapter=new ArrayAdapter<String>(this,
+                R.layout.list_white_text,
+                stops_string);
+        lv.setAdapter(adapter);
+        //listview.setAdapter(new Adapter(this));
     }
 
     public void getRoute() {
@@ -164,6 +198,7 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             result = new loadXml(url).execute().get();
             Log.d(TAG, "XML downloaded");
             Log.d(TAG, result);
+
             JSONObject jsonRootObject = new JSONObject(result);
             latest = jsonRootObject.getString("latest");
             Log.d(TAG, "latest = " + latest);
@@ -204,48 +239,75 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
             }
             Log.d(TAG, "trip_id = " + trip_id);
 
-            sb.setLength(0);
-            sb.append("http://data.foli.fi/gtfs/v0/"); sb.append(latest); sb.append("/stop_times/trip/"); sb.append(trip_id);
-            url = new URL(sb.toString());
-            Log.d(TAG, url.toString());
-            result = new loadXml(url).execute().get();
-            Log.d(TAG, "XML downloaded");
-            Log.d(TAG, result);
+            if(!trip_id.equals("")) {
+                sb.setLength(0);
+                sb.append("http://data.foli.fi/gtfs/v0/");
+                sb.append(latest);
+                sb.append("/stop_times/trip/");
+                sb.append(trip_id);
+                url = new URL(sb.toString());
+                Log.d(TAG, url.toString());
+                result = new loadXml(url).execute().get();
+                Log.d(TAG, "XML downloaded");
+                Log.d(TAG, result);
 
-            url = new URL("http://data.foli.fi/siri/sm");
-            Log.d(TAG, url.toString());
-            stopsxml = new loadXml(url).execute().get();
-            Log.d(TAG, "XML downloaded");
-            Log.d(TAG, stopsxml);
-            jsonArray = new JSONArray(result);
+                url = new URL("http://data.foli.fi/siri/sm");
+                Log.d(TAG, url.toString());
+                stopsxml = new loadXml(url).execute().get();
+                Log.d(TAG, "XML downloaded");
+                Log.d(TAG, stopsxml);
+                jsonArray = new JSONArray(result);
 
-            JSONObject jsonObject = new JSONObject(stopsxml);
+                JSONObject jsonObject = new JSONObject(stopsxml);
 
-            for(int i=0; i<jsonArray.length(); i++) {
-                JSONObject e = jsonArray.getJSONObject(i);
-                Iterator<String> iter = jsonObject.keys();
-                while (iter.hasNext()) {
-                    String key = iter.next();
-                    JSONObject jsonNode = jsonObject.getJSONObject(key);
-                    if(key.equals(e.getString("stop_id")) && !stops_string.contains(jsonNode.optString("stop_name"))) stops_string.add(jsonNode.optString("stop_name"));
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject e = jsonArray.getJSONObject(i);
+                    Iterator<String> iter = jsonObject.keys();
+                    while (iter.hasNext()) {
+                        String key = iter.next();
+                        JSONObject jsonNode = jsonObject.getJSONObject(key);
+                        if (key.equals(e.getString("stop_id")) && !stops_string.contains(jsonNode.optString("stop_name")))
+                            stops_string.add(jsonNode.optString("stop_name"));
+                    }
+                }
+
+                if (directionref.equals("1")) {
+                    Log.d(TAG, "Reversing stops");
+                    Log.d(TAG, "stops size before: " + stops_string.size());
+                    ArrayList<String> temp = new ArrayList<>();
+                    temp.addAll(stops_string);
+                    Log.d(TAG, "temp size: " + stops_string.size());
+                    stops_string.clear();
+                    //stops_string.add("---------");
+                    for (int i = temp.size() - 1; i > 0; i--) stops_string.add(temp.get(i));
+                    Log.d(TAG, "stops size after: " + stops_string.size());
+                    //Collections.reverse(stops_string);
                 }
             }
+            else { //if tripid is empty, show all the stops
+                url = new URL("http://data.foli.fi/gtfs/v0/20160425-104551/stops");
+                Log.d(TAG, url.toString());
+                stopsxml = new loadXml(url).execute().get();
+                Log.d(TAG, "XML downloaded");
+                Log.d(TAG, stopsxml);
 
-            if(directionref.equals("1")) {
-                Log.d(TAG, "Reversing stops");
-                Log.d(TAG, "stops size before: " + stops_string.size());
-                ArrayList<String> temp = new ArrayList<>();
-                temp.addAll(stops_string);
-                Log.d(TAG, "temp size: " + stops_string.size());
-                stops_string.clear();
-                //stops_string.add("---------");
-                for(int i=temp.size()-1; i>0; i--) stops_string.add(temp.get(i));
-                Log.d(TAG, "stops size after: " + stops_string.size());
-                //Collections.reverse(stops_string);
+                String key;
+                jsonRootObject = new JSONObject(stopsxml);
+                Iterator<String> iter = jsonRootObject.keys();
+                while (iter.hasNext()) {
+                    key = iter.next();
+                    JSONObject jsonNode = jsonRootObject.getJSONObject(key);
+                    if(!stops_string.contains(jsonNode.optString("stop_name"))) stops_string.add(jsonNode.optString("stop_name"));
+                }
+                Collections.sort(stops_string);
             }
 
             stopcount = stops_string.size();
-            listview.setAdapter(new Adapter(this));
+            //listview.setAdapter(new Adapter(this));
+            adapter=new ArrayAdapter<String>(this,
+                    R.layout.list_white_text,
+                    stops_string);
+            lv.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

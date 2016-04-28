@@ -1,6 +1,5 @@
 package com.capstone.innovationproject.routeguidance;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;

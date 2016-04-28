@@ -118,17 +118,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0sp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/select_destination"
-            android:id="@+id/button2"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="onClick"
-            android:visibility="invisible"/>
-
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
