@@ -78,7 +78,8 @@ public class SelectDestination extends AppCompatActivity implements AsyncRespons
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                stoppi = stops_string.get(position).toString();
+                //stoppi = stops_string.get(position).toString();
+                stoppi = parent.getAdapter().getItem(position).toString();
                 Intent i = new Intent(SelectDestination.this, NextStop.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("stopname", stoppi);
